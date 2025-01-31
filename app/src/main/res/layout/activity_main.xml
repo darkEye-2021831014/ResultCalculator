@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/LabelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Enter Student Information Below"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:ems="10"
+        android:hint="Enter Name"
+        android:inputType="text|textPersonName|textAutoComplete"
+        app:layout_constraintStart_toStartOf="@+id/LabelText"
+        app:layout_constraintTop_toBottomOf="@+id/LabelText" />
+
+    <EditText
+        android:id="@+id/regNo"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="48dp"
+        android:ems="10"
+        android:hint="Enter RegNo"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/LabelText"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <EditText
+        android:id="@+id/grade"
+        android:layout_width="78dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="4/A+/80"
+        android:inputType="number|numberDecimal"
+        app:layout_constraintStart_toStartOf="@+id/LabelText"
+        app:layout_constraintTop_toBottomOf="@+id/gradeInfo" />
+
+    <EditText
+        android:id="@+id/credit"
+        android:layout_width="78dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="32dp"
+        android:ems="10"
+        android:hint="Credit"
+        android:inputType="number|numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gradeType" />
+
+    <Spinner
+        android:id="@+id/gradeType"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:entries="@array/gradeTypes"
+        app:layout_constraintEnd_toStartOf="@+id/credit"
+        app:layout_constraintStart_toEndOf="@+id/grade"
+        app:layout_constraintTop_toTopOf="@+id/grade" />
+
+    <TextView
+        android:id="@+id/gradeInfo"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Select A Grade Type And Enter Value Of That Grade Along With Course Credit"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/LabelText"
+        app:layout_constraintTop_toBottomOf="@+id/regNo" />
+
+    <Button
+        android:id="@+id/addGrade"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Add Grade"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="@+id/credit"
+        app:layout_constraintStart_toStartOf="@+id/credit"
+        app:layout_constraintTop_toBottomOf="@+id/grade" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="446dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addGrade" />
+
+    <Button
+        android:id="@+id/generateResult"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Generate Result"
+        app:layout_constraintBottom_toBottomOf="@+id/clearSaved"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/clearSaved"
+        app:layout_constraintTop_toTopOf="@+id/clearSaved" />
+
+    <Button
+        android:id="@+id/clearSaved"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="Clear Saved Data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
