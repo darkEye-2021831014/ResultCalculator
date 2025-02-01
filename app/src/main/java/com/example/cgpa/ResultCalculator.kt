@@ -129,6 +129,23 @@ class ResultCalculator() {
             students.add(student);
     }
 
+    fun addStudent(name:String,regNo:String)
+    {
+        var student:Student? = isPresent(regNo);
+        var newStudent = false
+        if(student==null) {
+            student = Student(name, regNo);
+            newStudent = true;
+        }
+        else {
+            student.setName(name);
+            student.setRegNo(regNo);
+        }
+
+        if(newStudent)
+            students.add(student);
+    }
+
 
     private fun isPresent(regNo:String):Student?
     {
@@ -222,7 +239,7 @@ class ResultCalculator() {
             rank++
         }
 
-        var watermark = "Language Used - Java"
+        var watermark = "Language Used - Kotlin"
         val message = "N.B: Star(*) After Total Credit Means Drop In One Or More Courses."
         line = StringBuilder()
         line.append(message).append("\n")
@@ -239,7 +256,7 @@ class ResultCalculator() {
 
         //write pdf file
         convertTxtToPdf(fileContent.toString(),filePath);
-        Log.i(TAG, "Successfully wrote to the $filePath file");
+        Log.i(TAG, "Successfully Wrote To The $fileContent File");
     }
 
     private fun line(stringBuilder: StringBuilder) {
@@ -263,14 +280,13 @@ class ResultCalculator() {
                 s.getRegNo() + " " + s.getName() + " " + s.getCg() + " " +
                     s.getCredit()
             )
-//            Toast.makeText(this,"s.getRegNo() s.getName() s.getCg() s.getCredit()",Toast.LENGTH_SHORT).show()
         }
     }
 
     //format -> reg,name,cg,credit,
     private fun writeTxtFile(filePath:String,fileContent:String){
+        val textFilePath:StringBuilder=StringBuilder();
         try {
-            var textFilePath:StringBuilder=StringBuilder();
             for(c in filePath) {
                 if (c == '.') break;
                 textFilePath.append(c);
@@ -279,75 +295,75 @@ class ResultCalculator() {
 
             BufferedWriter(FileWriter(textFilePath.toString())).use { writer ->
                 writer.write(fileContent)
-                Log.i(TAG, "Successfully wrote to the $textFilePath file");
             }
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        Log.i(TAG, "Successfully wrote to the $textFilePath file");
     }
 
 
     private fun convertTxtToPdf(txtContent: String, pdfFilePath: String) {
         try {
-            // Read the TXT file content
-//            val txtFile = File(txtFilePath)
-//            val txtContent = txtFile.readText()  // Read the entire content of the TXT file
-
-            // Create a new PdfDocument
             val document = PdfDocument()
 
-            // Set up the page details (width, height, and page number)
-            val pageInfo = PdfDocument.PageInfo.Builder(650, 842, 1).create()  // A4 page size (595 x 842)
+            // Set page dimensions (A4 size)
+            val pageWidth = 650
+            val pageHeight = 842
+
+            var pageNumber = 1
+            var pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
             var page = document.startPage(pageInfo)
+            var canvas = page.canvas
+            val paint = Paint().apply {
+                color = Color.BLACK
+                textSize = 12f
+                isAntiAlias = true
+                typeface = Typeface.create("monospace", Typeface.NORMAL)
+            }
 
-            // Get the canvas to draw the content on the page
-            val canvas: Canvas = page.canvas
-            val paint = Paint()
-            paint.color = Color.BLACK
-            paint.textSize = 12f
-            paint.isAntiAlias = true
-            // Set typeface to a monospaced font (Courier New)
-            paint.typeface = Typeface.create("monospace", Typeface.NORMAL)
-
-            // Define margins
             val leftMargin = 40f
             val topMargin = 40f
             var yPosition = topMargin
+            val lineSpacing = 20f
+            val maxHeight = pageHeight - 40f // Keep margin at the bottom
 
-            // Split the content into lines by newlines
             val lines = txtContent.split("\n")
 
-            // Loop through each line and draw it on the canvas
             for (line in lines) {
-                if (yPosition + 20f > pageInfo.pageHeight) {
-                    // If we reached the end of the page, create a new page
+                if (yPosition + lineSpacing > maxHeight) {
+                    // Finish the current page
                     document.finishPage(page)
-                    val newPage = document.startPage(pageInfo)
+
+                    // Start a new page with incremented page number
+                    pageNumber++
+                    pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                    page = document.startPage(pageInfo)
+                    canvas = page.canvas // Update canvas reference
+
+                    // Reset yPosition for new page
                     yPosition = topMargin
-                    canvas.drawText(line, leftMargin, yPosition, paint)
-                    yPosition += 20f
-                    page = newPage
-                } else {
-                    canvas.drawText(line, leftMargin, yPosition, paint)
-                    yPosition += 20f
                 }
+
+                // Draw text on the current page
+                canvas.drawText(line, leftMargin, yPosition, paint)
+                yPosition += lineSpacing
             }
 
-            // Finish the page after adding all content
+            // Finish the last page
             document.finishPage(page)
 
-            // Write the document to the output file
+            // Write PDF to file
             val outputStream = FileOutputStream(pdfFilePath)
             document.writeTo(outputStream)
 
-            // Close the document
             document.close()
 
-            // Success message
             println("PDF created successfully at: $pdfFilePath")
         } catch (e: Exception) {
             e.printStackTrace()
             println("Error converting TXT to PDF: ${e.message}")
         }
     }
+
 }

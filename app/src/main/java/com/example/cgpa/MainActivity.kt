@@ -1,6 +1,7 @@
 package com.example.cgpa
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         addButton.setOnClickListener{
             val nameText:EditText = findViewById<EditText>(R.id.name);
             val regNoText:EditText = findViewById<EditText>(R.id.regNo);
-            val creditText:EditText? = findViewById<EditText>(R.id.credit);
+            val creditText:EditText? = findViewById<EditText>(R.id.creditA);
 
             val name = nameText.text.toString().trim();
             val regNo = regNoText.text.toString().trim();
@@ -93,9 +94,24 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        //advance mode
+        val advance = findViewById<Button>(R.id.advanceMode);
+        advance.setOnClickListener {
+            val intent = Intent(this, AdvanceMode::class.java);
+            startActivity(intent);
+            finish();
+        }
+
+
+
+
+
+
+
+
         val generateResult:Button = findViewById(R.id.generateResult);
         generateResult.setOnClickListener {
-            Toast.makeText(this,"Result Generated Successfully At DOCUMENTS Folder",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"Result Successfully Generated At DOCUMENTS Folder",Toast.LENGTH_LONG).show()
             result.show();
             result.writeFinal(PDF_FILE_PATH);
         }

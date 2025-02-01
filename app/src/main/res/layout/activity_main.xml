@@ -65,7 +65,7 @@
         app:layout_constraintTop_toBottomOf="@+id/gradeInfo" />
 
     <EditText
-        android:id="@+id/credit"
+        android:id="@+id/creditA"
         android:layout_width="106dp"
         android:layout_height="48dp"
         android:layout_marginEnd="28dp"
@@ -84,7 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:entries="@array/gradeTypes"
-        app:layout_constraintEnd_toStartOf="@+id/credit"
+        app:layout_constraintEnd_toStartOf="@+id/creditA"
         app:layout_constraintStart_toEndOf="@+id/grade"
         app:layout_constraintTop_toTopOf="@+id/grade" />
 
@@ -105,19 +105,19 @@
         android:layout_marginTop="32dp"
         android:text="Add Grade"
         android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="@+id/credit"
-        app:layout_constraintStart_toStartOf="@+id/credit"
+        app:layout_constraintEnd_toEndOf="@+id/creditA"
+        app:layout_constraintStart_toStartOf="@+id/creditA"
         app:layout_constraintTop_toBottomOf="@+id/grade" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="446dp"
         android:layout_height="1dp"
+        android:layout_marginTop="32dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addGrade" />
+        app:layout_constraintTop_toBottomOf="@+id/advanceMode" />
 
     <Button
         android:id="@+id/generateResult"
@@ -140,5 +140,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <Button
+        android:id="@+id/advanceMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Advance Mode"
+        app:layout_constraintEnd_toEndOf="@+id/addGrade"
+        app:layout_constraintTop_toBottomOf="@+id/addGrade" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

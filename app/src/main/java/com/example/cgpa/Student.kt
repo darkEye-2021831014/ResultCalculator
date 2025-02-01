@@ -69,6 +69,9 @@ class Student : Comparable<Student> {
     fun setName(name: String) {
         this.name = name
     }
+    fun setRegNo(regNo: String) {
+        this.regNo = regNo
+    }
     fun getCredit():Double {
         return this.credit;
     }
