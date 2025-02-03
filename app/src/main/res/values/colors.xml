@@ -5,5 +5,7 @@
     <color name="gray">#CBCBCBCB</color>
     <color name="cyan">#11CBE3</color>
     <color name="lime">#32CA39</color>
+    <color name="primaryBlue">#0000FF</color>
+    <color name="purple">#341539</color>
 
 </resources>

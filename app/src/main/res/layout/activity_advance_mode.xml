@@ -8,72 +8,38 @@
     tools:context=".AdvanceMode">
 
     <TextView
-        android:id="@+id/LabelText"
+        android:id="@+id/gradeInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="By Default Students Name Will Be Empty. You Can Provide Name For Each Registration Number.\nRemember to click generate Result After Providing Name"
-        android:textSize="12sp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="3"
+        android:minLines="2"
+        android:text="Please Enter The Credit of A Course\nThen Select The Pdf Result File of That Course."
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@id/gradeInfo"
-        app:layout_constraintStart_toStartOf="@+id/gradeInfo"
-        app:layout_constraintTop_toBottomOf="@+id/pdfSelector" />
-
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_name"
-        android:ems="10"
-        android:hint="Enter Name"
-        android:inputType="text|textPersonName|textAutoComplete"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/LabelText" />
-
-    <EditText
-        android:id="@+id/regNo"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_regno"
-        android:ems="10"
-        android:hint="Enter RegNo"
-        android:inputType="number"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
-
-    <TextView
-        android:id="@+id/gradeInfo"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Please Enter The Credit Of A Course First Then Select The Pdf Result File For That Course."
-        android:textStyle="bold"
+        app:autoSizeMaxTextSize="48sp"
+        app:autoSizeMinTextSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.32"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/pdfSelector"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="Select Pdf"
-        app:layout_constraintBottom_toBottomOf="@+id/creditA"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/creditA"
-        app:layout_constraintTop_toTopOf="@+id/creditA" />
+        app:layout_constraintEnd_toEndOf="@+id/gradeInfo"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/gradeInfo"
+        app:layout_constraintTop_toBottomOf="@+id/creditA" />
 
     <EditText
         android:id="@+id/creditA"
-        android:layout_width="180dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/custom_input"
@@ -83,6 +49,7 @@
         android:inputType="number|numberDecimal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/gradeInfo"
         app:layout_constraintStart_toStartOf="@+id/gradeInfo"
         app:layout_constraintTop_toBottomOf="@+id/gradeInfo" />
 
@@ -100,64 +67,58 @@
         android:id="@+id/divider"
         android:layout_width="446dp"
         android:layout_height="1dp"
+        android:layout_marginBottom="100dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/clearSaved"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@color/purple"
+        android:textColor="@color/cyan"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Clear Saved Data"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/generateResult"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regNameFile"
-        app:layout_constraintVertical_bias="0.19" />
-    <Button
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <!-- Right Button -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/generateResult"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@color/purple"
+        android:textColor="@color/cyan"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="Generate Result"
         app:layout_constraintBottom_toBottomOf="@+id/clearSaved"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/clearSaved"
-        app:layout_constraintTop_toTopOf="@+id/clearSaved" />
-
-    <Button
-        android:id="@+id/clearSaved"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:text="Clear Saved Data"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-    <Button
-        android:id="@+id/addName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Name"
-        app:layout_constraintBottom_toBottomOf="@+id/regNo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/name"
-        app:layout_constraintTop_toTopOf="@+id/name" />
-
-    <Button
-        android:id="@+id/regNameFile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
-        android:text="Registration number And Name File"
-        app:layout_constraintEnd_toEndOf="@+id/addName"
-        app:layout_constraintStart_toStartOf="@+id/regNo"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="You Can Also Provide A File Containg only registration numer than name. \nBe Sure To Provide Credit Value 5 Before Selecting The File"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="@+id/addName"
-        app:layout_constraintStart_toStartOf="@+id/regNo"
-        app:layout_constraintTop_toBottomOf="@+id/regNo" />
+        app:layout_constraintStart_toEndOf="@id/clearSaved"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5" />
 
     <!--    <Button-->
 <!--        android:id="@+id/advanceMode"-->
