@@ -8,6 +8,7 @@ import android.graphics.pdf.PdfDocument
 import android.util.Log
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.FileWriter
@@ -24,16 +25,17 @@ class ResultCalculator() {
 
     private var maxCell = 0
 
-    fun clearSavedData(filePath: String) {
+    fun clearSavedData(filePath: String,myFolder:File) {
         students.clear()
-        writeTxtFile(filePath,"");
+        writeTxtFile(filePath,"",myFolder);
     }
 
 
     // file reader for reg,name,cg,credit;
-    fun readSaveFile(filePath:String) {
+    fun readSaveFile(filePath:String,myFolder:File) {
+        val textFile = File(myFolder,filePath);
         try {
-            BufferedReader(FileReader(filePath)).use { reader ->
+            BufferedReader(FileReader(textFile)).use { reader ->
                 var line: String?
                 var credit = 0.0
                 while ((reader.readLine().also { line = it }) != null) {
@@ -129,7 +131,35 @@ class ResultCalculator() {
             students.add(student);
     }
 
-    fun addStudent(name:String,regNo:String)
+    fun addStudent(regNo:String,credit:Double,marks:Int)
+    {
+        var student:Student? = isPresent(regNo);
+        var newStudent = false
+        if(student==null) {
+            student = Student(regNo);
+            newStudent = true;
+        }
+
+        student.result(marks,credit)
+        if(newStudent)
+            students.add(student);
+    }
+
+    fun addStudent(regNo:String,credit:Double,cg:Double)
+    {
+        var student:Student? = isPresent(regNo);
+        var newStudent = false
+        if(student==null) {
+            student = Student(regNo);
+            newStudent = true;
+        }
+
+        student.result(cg,credit)
+        if(newStudent)
+            students.add(student);
+    }
+
+    fun addStudent(regNo:String,name:String)
     {
         var student:Student? = isPresent(regNo);
         var newStudent = false
@@ -166,7 +196,7 @@ class ResultCalculator() {
 
 
     // write the final file that will be converted to pdf
-    fun writeFinal(filePath: String) {
+    fun writeFinal(filePath_pdf: String,filePath_text:String, myFolder:File) {
         val tmp = ArrayList<Student>()
         for (s: Student in students) {
             if (s.getCredit() > 0.0) tmp.add(s)
@@ -245,18 +275,18 @@ class ResultCalculator() {
         line.append(message).append("\n")
 
         line.append(" ".repeat(maxCell)).append("\n")
-        line.append(" ".repeat(maxCell - watermark.length - 1)).append(watermark).append("\n")
+        line.append(" ".repeat(maxCell - watermark.length)).append(watermark).append("\n")
         watermark = "Prepared By - darkEye"
         line.append(" ".repeat(maxCell - watermark.length)).append(watermark).append("\n")
         fileContent.append(line)
 
 
         //write to text file
-        writeTxtFile(filePath,textFileContent.toString());
+        writeTxtFile(filePath_text,textFileContent.toString(),myFolder);
 
         //write pdf file
-        convertTxtToPdf(fileContent.toString(),filePath);
-        Log.i(TAG, "Successfully Wrote To The $fileContent File");
+        convertTxtToPdf(fileContent.toString(),filePath_pdf);
+        Log.i(TAG, "Successfully Wrote To The $filePath_pdf File");
     }
 
     private fun line(stringBuilder: StringBuilder) {
@@ -284,22 +314,17 @@ class ResultCalculator() {
     }
 
     //format -> reg,name,cg,credit,
-    private fun writeTxtFile(filePath:String,fileContent:String){
-        val textFilePath:StringBuilder=StringBuilder();
+    private fun writeTxtFile(filePath:String,fileContent:String,myFolder:File){
         try {
-            for(c in filePath) {
-                if (c == '.') break;
-                textFilePath.append(c);
-            }
-            textFilePath.append(".txt");
+            val textFile = File(myFolder,filePath);
 
-            BufferedWriter(FileWriter(textFilePath.toString())).use { writer ->
+            BufferedWriter(FileWriter(textFile)).use { writer ->
                 writer.write(fileContent)
             }
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        Log.i(TAG, "Successfully wrote to the $textFilePath file");
+        Log.i(TAG, "Successfully wrote to the $filePath file");
     }
 
 

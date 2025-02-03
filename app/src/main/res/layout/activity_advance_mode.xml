@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="By Default Students Name Will Be Empty. You Can Provide Name For Each Registration Number.\nRemember to click generate Result After Providing Name"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@id/gradeInfo"
         app:layout_constraintStart_toStartOf="@+id/gradeInfo"
@@ -23,7 +23,7 @@
         android:id="@+id/name"
         android:layout_width="200dp"
         android:layout_height="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/custom_input"
         android:drawableStart="@drawable/custom_name"
         android:ems="10"
@@ -38,7 +38,7 @@
         android:id="@+id/regNo"
         android:layout_width="200dp"
         android:layout_height="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/custom_input"
         android:drawableStart="@drawable/custom_regno"
         android:ems="10"
@@ -104,7 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/regNo"
+        app:layout_constraintTop_toBottomOf="@+id/regNameFile"
         app:layout_constraintVertical_bias="0.19" />
     <Button
         android:id="@+id/generateResult"
@@ -121,8 +121,6 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
         android:text="Clear Saved Data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -137,6 +135,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/name"
         app:layout_constraintTop_toTopOf="@+id/name" />
+
+    <Button
+        android:id="@+id/regNameFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:text="Registration number And Name File"
+        app:layout_constraintEnd_toEndOf="@+id/addName"
+        app:layout_constraintStart_toStartOf="@+id/regNo"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="You Can Also Provide A File Containg only registration numer than name. \nBe Sure To Provide Credit Value 5 Before Selecting The File"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/addName"
+        app:layout_constraintStart_toStartOf="@+id/regNo"
+        app:layout_constraintTop_toBottomOf="@+id/regNo" />
 
     <!--    <Button-->
 <!--        android:id="@+id/advanceMode"-->

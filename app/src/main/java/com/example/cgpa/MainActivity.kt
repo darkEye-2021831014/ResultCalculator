@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
@@ -14,13 +15,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
 
 
 private const val TAG = "MainActivity";
-private const val TEXT_FILE_PATH = "/storage/emulated/0/Documents/ResultOutput.txt"
+private const val TEXT_FILE_PATH = "ResultOutput.txt"
 private const val PDF_FILE_PATH = "/storage/emulated/0/Documents/ResultOutput.pdf"
+private const val FOLDER_NAME = "MyFolder"
+
 
 class MainActivity : AppCompatActivity() {
+//    private val myFolder = File(TEXT_FILE_PATH);
+    private lateinit var myFolder:File;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,6 +36,14 @@ class MainActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+        myFolder = File(getExternalFilesDir(null), FOLDER_NAME)
+
+        if (!myFolder.exists()) {
+            val success = myFolder.mkdirs()
+            val file = File(myFolder, TEXT_FILE_PATH);
+            if(!file.exists()) file.createNewFile()
+            Log.i(TAG, "Directory created:  at ${myFolder.absolutePath}")
         }
 
 
@@ -58,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val result:ResultCalculator = ResultCalculator();
-        result.readSaveFile(TEXT_FILE_PATH)
+        result.readSaveFile(TEXT_FILE_PATH,myFolder)
 
         addButton.setOnClickListener{
             val nameText:EditText = findViewById<EditText>(R.id.name);
@@ -113,14 +128,14 @@ class MainActivity : AppCompatActivity() {
         generateResult.setOnClickListener {
             Toast.makeText(this,"Result Successfully Generated At DOCUMENTS Folder",Toast.LENGTH_LONG).show()
             result.show();
-            result.writeFinal(PDF_FILE_PATH);
+            result.writeFinal(PDF_FILE_PATH, TEXT_FILE_PATH,myFolder);
         }
 
         val clearSavedData:Button = findViewById(R.id.clearSaved);
         clearSavedData.setOnClickListener {
             showConfirmationDialog("All Data You Have Entered Up to Now Will Be Cleared.\nDo You Want To Proceed?"){ confirm->
                 if(confirm) {
-                    result.clearSavedData(TEXT_FILE_PATH);
+                    result.clearSavedData(TEXT_FILE_PATH,myFolder);
                     Toast.makeText(
                         this,
                         "All Data You Have Entered Up to Now Has Been Cleared",
