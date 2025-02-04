@@ -10,37 +10,27 @@
     <TextView
         android:id="@+id/gradeInfo"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
-        android:autoSizeStepGranularity="2sp"
-        android:autoSizeTextType="uniform"
-        android:maxLines="3"
-        android:minLines="2"
-        android:text="Please Enter The Credit of A Course\nThen Select The Pdf Result File of That Course."
+        android:text="Please Enter The Credit of A Course.\nThen Select The Pdf Result File of That Course."
+        android:textSize="20sp"
         android:textStyle="bold"
         app:autoSizeMaxTextSize="48sp"
-        app:autoSizeMinTextSize="32sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/creditA"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/pdfSelector"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Select Pdf"
-        app:layout_constraintEnd_toEndOf="@+id/gradeInfo"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/gradeInfo"
-        app:layout_constraintTop_toBottomOf="@+id/creditA" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1.6" />
 
     <EditText
         android:id="@+id/creditA"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/custom_input"
         android:drawableStart="@drawable/custom_regno"
@@ -49,29 +39,50 @@
         android:inputType="number|numberDecimal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/pdfSelector"
         app:layout_constraintEnd_toEndOf="@+id/gradeInfo"
         app:layout_constraintStart_toStartOf="@+id/gradeInfo"
-        app:layout_constraintTop_toBottomOf="@+id/gradeInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/gradeInfo"
+        app:layout_constraintVertical_weight="1" />
 
+    <Button
+        android:id="@+id/pdfSelector"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="48dp"
+        android:text="SELECT PDF"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/normalMode"
+        app:layout_constraintEnd_toEndOf="@+id/gradeInfo"
+        app:layout_constraintStart_toStartOf="@+id/gradeInfo"
+        app:layout_constraintTop_toBottomOf="@+id/creditA"
+        app:layout_constraintVertical_weight="1" />
 
+    <Button
+        android:id="@+id/normalMode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="48dp"
+        android:text="NORMAL MODE"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="@+id/pdfSelector"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/pdfSelector"
+        app:layout_constraintTop_toBottomOf="@+id/pdfSelector"
+        app:layout_constraintVertical_weight="1" />
 
-    <!--    <Button-->
-<!--        android:id="@+id/addGrade"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:text="Add Grade"-->
-<!--        android:textStyle="italic"/>-->
-<!--    -->
     <View
         android:id="@+id/divider"
-        android:layout_width="446dp"
-        android:layout_height="1dp"
-        android:layout_marginBottom="100dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="156dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/clearSaved"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/normalMode"
+        app:layout_constraintVertical_weight=".05" />
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -79,25 +90,24 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="4dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
         android:autoSizeMaxTextSize="24sp"
         android:autoSizeMinTextSize="12sp"
         android:autoSizeStepGranularity="2sp"
         android:autoSizeTextType="uniform"
         android:background="@color/purple"
-        android:textColor="@color/cyan"
         android:ellipsize="end"
         android:maxLines="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:text="Clear Saved Data"
+        android:textColor="@color/cyan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/generateResult"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintVertical_weight="3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
-    <!-- Right Button -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/generateResult"
         android:layout_width="0dp"
@@ -113,21 +123,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="Generate Result"
-        app:layout_constraintBottom_toBottomOf="@+id/clearSaved"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/clearSaved"
         app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintVertical_weight="3"/>
 
-    <!--    <Button-->
-<!--        android:id="@+id/advanceMode"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:text="Advance Mode"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/addGrade"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/addGrade"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/addGrade" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

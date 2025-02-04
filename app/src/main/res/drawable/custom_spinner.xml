@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Focused and enabled state -->
+    <item android:state_enabled="true" android:state_focused="true">
+        <layer-list>
+            <!-- Background shape -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/black"/>
+                    <stroke android:width="2dp" android:color="@color/cyan"/>
+                    <corners android:radius="12dp"/>
+                    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+                </shape>
+            </item>
+            <!-- Dropdown arrow -->
+            <item android:gravity="end|center_vertical" android:drawable="@drawable/ic_dropdown" android:right="8dp"/>
+        </layer-list>
+    </item>
+
+    <!-- Pressed and enabled state -->
+    <item android:state_enabled="true" android:state_pressed="true">
+        <layer-list>
+            <!-- Background shape -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/black"/>
+                    <stroke android:width="2dp" android:color="@color/cyan"/>
+                    <corners android:radius="12dp"/>
+                    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+                </shape>
+            </item>
+            <!-- Dropdown arrow -->
+            <item android:gravity="end|center_vertical" android:drawable="@drawable/ic_dropdown" android:right="8dp"/>
+        </layer-list>
+    </item>
+
+    <!-- Enabled state -->
+    <item android:state_enabled="true">
+        <layer-list>
+            <!-- Background shape -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/black"/>
+                    <stroke android:width="2dp" android:color="@color/gray"/>
+                    <corners android:radius="12dp"/>
+                    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+                </shape>
+            </item>
+            <!-- Dropdown arrow -->
+            <item android:gravity="end|center_vertical" android:drawable="@drawable/ic_dropdown" android:right="8dp"/>
+        </layer-list>
+    </item>
+
+    <!-- Default state -->
+    <item>
+        <layer-list>
+            <!-- Background shape -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/black"/>
+                    <stroke android:width="2dp" android:color="@color/gray"/>
+                    <corners android:radius="12dp"/>
+                    <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
+                </shape>
+            </item>
+            <!-- Dropdown arrow -->
+            <item android:gravity="end|center_vertical" android:drawable="@drawable/ic_dropdown" android:right="8dp"/>
+        </layer-list>
+    </item>
+</selector>

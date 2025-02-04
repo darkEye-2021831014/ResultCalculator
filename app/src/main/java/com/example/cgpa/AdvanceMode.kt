@@ -46,9 +46,17 @@ class AdvanceMode : AppCompatActivity() {
         //read previously saved data
         result.readSaveFile(myFolder);
 
+        //select pdf file
         val pdfSelector = findViewById<Button>(R.id.pdfSelector)
         pdfSelector.setOnClickListener {
             openFilePicker()
+        }
+
+
+        findViewById<Button>(R.id.normalMode).setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java);
+            startActivity(intent);
+            finish();
         }
 
 
@@ -62,7 +70,7 @@ class AdvanceMode : AppCompatActivity() {
             Toast.makeText(this,"Result Generation Successful",Toast.LENGTH_SHORT).show();
         }
 
-
+        //clear saved data
         val clearSavedData:Button = findViewById(R.id.clearSaved);
         clearSavedData.setOnClickListener {
             confirmationDialog()

@@ -9,145 +9,221 @@
 
     <TextView
         android:id="@+id/LabelText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Enter Student Information Below"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:maxLines="2"
+        android:text="Student Information"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="24sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1" />
 
     <EditText
         android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="48dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:ems="10"
-        android:drawableStart="@drawable/custom_name"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_name"
+        android:ems="10"
         android:hint="Enter Name"
         android:inputType="text|textPersonName|textAutoComplete"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/regNo"
         app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/LabelText" />
+        app:layout_constraintTop_toBottomOf="@+id/LabelText"
+        app:layout_constraintVertical_weight="1.2" />
 
     <EditText
         android:id="@+id/regNo"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="48dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:ems="10"
-        android:drawableStart="@drawable/custom_regno"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_regno"
+        android:ems="10"
         android:hint="Enter RegNo"
         android:inputType="number"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/gradeInfo"
+        app:layout_constraintEnd_toEndOf="@+id/name"
+        app:layout_constraintStart_toStartOf="@+id/name"
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintVertical_weight="1.2" />
 
     <EditText
         android:id="@+id/grade"
-        android:layout_width="100dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_grade"
+        android:ems="10"
+        android:hint=" 4/A+/80"
+        android:inputType="number|numberDecimal"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:ems="10"
-        android:background="@drawable/custom_input"
-        android:hint="4/A+/80"
-        android:inputType="number|numberDecimal"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/gradeInfo" />
-
-    <EditText
-        android:id="@+id/creditA"
-        android:layout_width="106dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="28dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:ems="10"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_regno"
-        android:hint="Credit"
-        android:inputType="number|numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/gradeType" />
+        app:layout_constraintBottom_toTopOf="@+id/creditA"
+        app:layout_constraintEnd_toStartOf="@id/gradeType"
+        app:layout_constraintHorizontal_weight="1.5"
+        app:layout_constraintStart_toStartOf="@+id/regNo"
+        app:layout_constraintTop_toBottomOf="@+id/gradeInfo"
+        app:layout_constraintVertical_weight="1.2" />
 
     <Spinner
         android:id="@+id/gradeType"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:entries="@array/gradeTypes"
-        app:layout_constraintEnd_toStartOf="@+id/creditA"
+        android:background="@drawable/custom_spinner"
+        android:popupBackground="@drawable/custom_input"
+        app:layout_constraintBottom_toBottomOf="@+id/grade"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/grade"
-        app:layout_constraintTop_toTopOf="@+id/grade" />
+        app:layout_constraintTop_toTopOf="@+id/grade"
+        app:layout_constraintVertical_weight="1"/>
+
+    <EditText
+        android:id="@+id/creditA"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_input"
+        android:drawableStart="@drawable/custom_regno"
+        android:ems="10"
+        android:hint="Credit"
+        android:inputType="number|numberDecimal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/addGrade"
+        app:layout_constraintEnd_toEndOf="@+id/grade"
+        app:layout_constraintStart_toStartOf="@+id/grade"
+        app:layout_constraintTop_toBottomOf="@+id/grade"
+        app:layout_constraintVertical_weight="1.2" />
+
 
     <TextView
         android:id="@+id/gradeInfo"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Select A Grade Type And Enter Value Of That Grade Along With Course Credit"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:maxLines="3"
+        android:text="Select A Grade Type And Enter The Value Of That Grade Along With Course Credit"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="24sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/grade"
+        app:layout_constraintEnd_toEndOf="@+id/LabelText"
         app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/regNo" />
+        app:layout_constraintTop_toBottomOf="@+id/regNo"
+        app:layout_constraintVertical_weight="0.85" />
 
     <Button
         android:id="@+id/addGrade"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Add Grade"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="@+id/creditA"
-        app:layout_constraintStart_toStartOf="@+id/creditA"
-        app:layout_constraintTop_toBottomOf="@+id/grade" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="446dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="32dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/advanceMode" />
-
-    <Button
-        android:id="@+id/generateResult"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:text="Generate Result"
-        app:layout_constraintBottom_toBottomOf="@+id/clearSaved"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/clearSaved"
-        app:layout_constraintTop_toTopOf="@+id/clearSaved" />
-
-    <Button
-        android:id="@+id/clearSaved"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="Clear Saved Data"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:text="ADD GRADE"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/advanceMode"
+        app:layout_constraintEnd_toEndOf="@+id/LabelText"
+        app:layout_constraintStart_toStartOf="@+id/grade"
+        app:layout_constraintTop_toBottomOf="@+id/creditA"
+        app:layout_constraintVertical_weight="1.2" />
 
     <Button
         android:id="@+id/advanceMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Advance Mode"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:text="ADVANCE MODE"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="@+id/addGrade"
-        app:layout_constraintTop_toBottomOf="@+id/addGrade" />
+        app:layout_constraintStart_toStartOf="@+id/grade"
+        app:layout_constraintTop_toBottomOf="@+id/addGrade"
+        app:layout_constraintVertical_weight="1.2" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/clearSaved"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/advanceMode"
+        app:layout_constraintVertical_weight="0.05" />
+
+    <!-- Clear Saved Data Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/clearSaved"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="4dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@color/purple"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:text="Clear Saved Data"
+        android:textColor="@color/cyan"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/generateResult"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintVertical_weight="1.6" />
+
+    <!-- Generate Result Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/generateResult"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeStepGranularity="2sp"
+        android:autoSizeTextType="uniform"
+        android:background="@color/purple"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:text="Generate Result"
+        android:textColor="@color/cyan"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/clearSaved"
+        app:layout_constraintTop_toTopOf="@+id/clearSaved"
+        app:layout_constraintVertical_weight="1.6" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.example.cgpa
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -21,6 +20,7 @@ import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private lateinit var myFolder:File;
+    private val result = ResultCalculator();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +42,16 @@ class MainActivity : AppCompatActivity() {
             Log.i(Helper.TAG, "Directory created:  at ${myFolder.absolutePath}")
         }
 
-
+        //read previously saved data
+        result.readSaveFile(myFolder)
 
         val addButton: Button =findViewById(R.id.addGrade);
-        val gradeType:Spinner = findViewById<Spinner>(R.id.gradeType);
-        val gradeText:EditText? = findViewById<EditText>(R.id.grade);
+        val gradeType:Spinner = findViewById(R.id.gradeType);
+        val gradeText:EditText? = findViewById(R.id.grade);
 
         var gradeTypeText:String? =null;
 
+        //handle grade selection
         gradeType.onItemSelectedListener =object : AdapterView.OnItemSelectedListener{
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -68,40 +70,9 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        val result:ResultCalculator = ResultCalculator();
-        result.readSaveFile(myFolder)
-
+        //add student information
         addButton.setOnClickListener{
-            val nameText:EditText = findViewById<EditText>(R.id.name);
-            val regNoText:EditText = findViewById<EditText>(R.id.regNo);
-            val creditText:EditText? = findViewById<EditText>(R.id.creditA);
-
-            val name = nameText.text.toString().trim();
-            val regNo = regNoText.text.toString().trim();
-            val grade = gradeText?.text.toString().trim();
-            val credit = creditText?.text.toString().trim();
-            val info = arrayOf(name,regNo,grade,credit);
-
-            var ok:Boolean = true
-            for (i in info)
-            {
-                if(i.isBlank() || i. isEmpty())
-                    ok=false;
-            }
-            if(!ok)
-                Toast.makeText(this,"Please Fill All The Required Filled Correctly!",Toast.LENGTH_SHORT).show();
-            else
-            {
-                if(gradeTypeText.equals("CGPA",true))
-                    result.addStudent(name,regNo,credit.toDouble(),grade.toDouble());
-                if(gradeTypeText.equals("Grade",true))
-                    result.addStudent(name,regNo,credit.toDouble(),grade);
-                if(gradeTypeText.equals("Marks",true))
-                    result.addStudent(name,regNo,credit.toDouble(),grade.toInt());
-                Toast.makeText(this,"Grade: $grade And Credit: $credit, Added For The Student: $name",Toast.LENGTH_SHORT).show();
-                creditText?.text = null;
-                gradeText?.text = null;
-            }
+            addStudentInfo(gradeTypeText,gradeText);
         }
 
 
@@ -113,67 +84,76 @@ class MainActivity : AppCompatActivity() {
             finish();
         }
 
-
-
-
-
-
-
-
+        //generate result
         val generateResult:Button = findViewById(R.id.generateResult);
         generateResult.setOnClickListener {
-            Toast.makeText(this,"Result Successfully Generated At DOCUMENTS Folder",Toast.LENGTH_LONG).show()
             result.show();
-            result.generateResult(this,myFolder)
+            result.generateResult(this,myFolder);
+            Log.i(Helper.TAG,"Result Generation Successful");
+            Toast.makeText(this,"Result Generation Successful",Toast.LENGTH_SHORT).show();
         }
 
+        //clear saved data
         val clearSavedData:Button = findViewById(R.id.clearSaved);
         clearSavedData.setOnClickListener {
-            showConfirmationDialog("All Data You Have Entered Up to Now Will Be Cleared.\nDo You Want To Proceed?"){ confirm->
-                if(confirm) {
-                    result.clearSavedData(myFolder);
-                    Toast.makeText(
-                        this,
-                        "All Data You Have Entered Up to Now Has Been Cleared",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-                else Toast.makeText(
+            confirmDialog();
+        }
+    }
+
+    private fun addStudentInfo(gradeTypeText:String?,gradeText:EditText?)
+    {
+        val nameText:EditText = findViewById(R.id.name);
+        val regNoText:EditText = findViewById(R.id.regNo);
+        val creditText:EditText? = findViewById(R.id.creditA);
+
+        val name = nameText.text.toString().trim();
+        val regNo = regNoText.text.toString().trim();
+        val grade = gradeText?.text.toString().trim();
+        val credit = creditText?.text.toString().trim();
+        val info = arrayOf(name,regNo,grade,credit);
+
+        var ok = true
+        for (i in info)
+        {
+            if(i.isBlank() || i. isEmpty())
+                ok=false;
+        }
+        if(!ok)
+            Toast.makeText(this,"Please Fill All The Required Filled Correctly!",Toast.LENGTH_SHORT).show();
+        else
+        {
+            if(gradeTypeText.equals("CGPA",true))
+                result.addStudent(name,regNo,credit.toDouble(),grade.toDouble());
+            if(gradeTypeText.equals("Grade",true))
+                result.addStudent(name,regNo,credit.toDouble(),grade);
+            if(gradeTypeText.equals("Marks",true))
+                result.addStudent(name,regNo,credit.toDouble(),grade.toInt());
+            Toast.makeText(this,"Grade: $grade And Credit: $credit, Added For The Student: $name",Toast.LENGTH_SHORT).show();
+            creditText?.text = null;
+            gradeText?.text = null;
+        }
+    }
+
+
+
+    private fun confirmDialog()
+    {
+        Helper.showConfirmationDialog(this,"All Data You Have Entered Up to Now Will Be Cleared.\nDo You Want To Proceed?"){ confirm->
+            if(confirm) {
+                result.clearSavedData(myFolder);
+                Toast.makeText(
                     this,
-                    "All Data Remains Unchanged",
+                    "All Data You Have Entered Up to Now Has Been Cleared",
                     Toast.LENGTH_SHORT
                 ).show()
-            };
-        }
+            }
+            else Toast.makeText(
+                this,
+                "All Data Remains Unchanged",
+                Toast.LENGTH_SHORT
+            ).show()
+        };
     }
-
-
-
-
-
-    private fun showConfirmationDialog(message:String,confirm:(Boolean)->Unit) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirmation")
-        builder.setMessage(message)
-
-        builder.setPositiveButton("Yes") { dialog, _ ->
-            // Action when YES is clicked
-            dialog.dismiss()
-            confirm(true)
-        }
-
-        builder.setNegativeButton("No") { dialog, _ ->
-            // Action when NO is clicked
-            dialog.dismiss()
-            confirm(false)
-        }
-
-        val dialog = builder.create()
-        dialog.setCancelable(false);
-        dialog.show()
-    }
-
-
 
 
 

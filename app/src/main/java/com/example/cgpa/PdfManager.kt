@@ -78,7 +78,7 @@ class PdfManager(private val context:Context) {
             for (line in lines)
             {
                 if(line.isEmpty() || line.isBlank())break;
-                Log.i(Helper.TAG,"New Line: ${line}")
+//                Log.i(Helper.TAG,"New Line: $line")
                 val elements = line.split(identifier)
                 for(element in elements) {
                     if(header)
@@ -94,7 +94,7 @@ class PdfManager(private val context:Context) {
             // Add the table to the document
             document.add(table)
 
-            caption = Paragraph("N.B: Star(*) After Total Credit Means Drop In One Or More Courses.")
+            caption = Paragraph("N.B: Star(*) After Total Credit Means Drop In One or More Courses.")
                 .setFontSize(14f)
                 .setBold()
                 .setTextAlignment(TextAlignment.LEFT)
@@ -184,6 +184,7 @@ class PdfManager(private val context:Context) {
 
     //detect pdf format then extract info and populate
     fun detectPdfFormatAndPopulate(result:ResultCalculator,text: String,credit:Double) {
+//        Log.i(Helper.TAG,text)
         Log.i(TAG,"Inside Extractor")
         val lines = text.split("\n")
 
@@ -192,11 +193,14 @@ class PdfManager(private val context:Context) {
             Format.REG_NAME_GRADE to Regex("""^(\d{10})\s+([\w. ]+?)\s+([A-D][+-]?|F)$"""),
             Format.REG_MARKS to Regex("""^(\d{10})\s+(\d{1,3}(?:\.\d{0,2})?)$"""),
             Format.REG_NAME_CREDIT_CG to
-                Regex("""^(\d{10})\s+[\d-]+\s+([\w. ]+?)\s+(\d{1,3}(?:\.\d{0,2})?)\s+(\d(?:\.\d{0,2})?)\s+\S+$""")
+                Regex("""^(\d{10})\s+[\d-]+\s+([\w. ]+?)\s+(\d{1,3}(?:\.\d{0,2})?)\s+(\d(?:\.\d{0,2})?)\s*\S*$"""),
+            Format.CG_REG_NAME to Regex("""^(\d(?:\.\d{0,2})?)\s+\S+\s+(\d{10})\s+\d+\s+([\w. ]+?)$"""),
+            Format.MARKS_REG_NAME to Regex("""^(\d{1,3}(?:\.\d{0,2})?)\s+(\d{10})\s+\d+\s+([\w. ]+?)$"""),
+            Format.REG_NAME_CG to Regex("""^\S*\s*(\d{10})\s+([\w. ]+?)\s+(\d(?:\.\d{0,2})?)\s*\S*$"""),
         )
 
+        var found = false
         for((format,pattern) in formatMap) {
-            var found = false
             Log.i(TAG,"pattern: $format")
             for(line in lines) {
                 val matches = pattern.findAll(line);
@@ -206,7 +210,7 @@ class PdfManager(private val context:Context) {
                     when(format) {
                         Format.REG_NAME_MARKS -> {
                             val (reg, name, marks) = match.destructured
-                            result.addStudent(name, reg, credit, marks.toInt())
+                            result.addStudent(name, reg, credit, marks.toDouble().toInt())
                         }
                         Format.REG_NAME_GRADE -> {
                             val (reg, name, grade) = match.destructured
@@ -214,19 +218,33 @@ class PdfManager(private val context:Context) {
                         }
                         Format.REG_MARKS -> {
                             val (reg, marks) = match.destructured
-                            result.addStudent(reg,credit,marks.toInt());
+                            result.addStudent(reg,credit,marks.toDouble().toInt());
                         }
                         Format.REG_NAME_CREDIT_CG -> {
                             val (reg,name, totalCredit,cg) = match.destructured
                             result.addStudent(name,reg,totalCredit.toDouble(),cg.toDouble());
-//                            Log.i(TAG,"$reg $name $totalCredit $cg")
                         }
-                        else -> Log.i(TAG,"Invalid format!")
+                        Format.CG_REG_NAME->{
+                            val (cg,reg,name) = match.destructured
+                            result.addStudent(name,reg,credit,cg.toDouble());
+                        }
+                        Format.REG_NAME_CG->{
+                            val (reg,name,cg) = match.destructured
+                            result.addStudent(name,reg,credit,cg.toDouble());
+                        }
+                        Format.MARKS_REG_NAME->{
+                            val (marks,reg,name) = match.destructured
+                            result.addStudent(name,reg,credit,marks.toDouble().toInt());
+                        }
                     }
                 }
             }
-
             if(found) break;
+        }
+        if(!found)
+        {
+            Log.i(Helper.TAG,"Invalid Format!")
+            Toast.makeText(context,"Failed To Read Pdf File\nInvalid Format!", Toast.LENGTH_LONG).show()
         }
     }
 
