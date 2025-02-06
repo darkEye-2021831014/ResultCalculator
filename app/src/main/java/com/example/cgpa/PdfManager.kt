@@ -20,6 +20,7 @@ import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfReader
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor
+import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
 import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Cell
@@ -162,7 +163,7 @@ class PdfManager(private val context:Context) {
 
 
 
-    fun readPdfContent(uri: Uri): String {
+    fun readPdfContent(uri: Uri): List<String> {
         val contentResolver = context.applicationContext.contentResolver
         val inputStream = contentResolver.openInputStream(uri)
         val pdfReader = PdfReader(inputStream)
@@ -171,89 +172,119 @@ class PdfManager(private val context:Context) {
 
         for (i in 1..pdfDocument.numberOfPages) {
             val page = pdfDocument.getPage(i)
-            val strategy = SimpleTextExtractionStrategy()
+            val strategy = LocationTextExtractionStrategy()
             text.append(PdfTextExtractor.getTextFromPage(page, strategy))
         }
 
+
         pdfDocument.close()
         pdfReader.close()
-        return text.toString()
+        return fixMergedRows(text.toString())
     }
 
 
+    private fun fixMergedRows(text: String): List<String> {
+        val lines = text.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
+        val fixedRows = mutableListOf<String>()
+        val digitRegex = Regex("\\b\\d{10}\\b")  // Match exactly one 10-digit number
 
-    //detect pdf format then extract info and populate
-    fun detectPdfFormatAndPopulate(result:ResultCalculator,text: String,credit:Double) {
-//        Log.i(Helper.TAG,text)
-        Log.i(TAG,"Inside Extractor")
-        val lines = text.split("\n")
+        for (line in lines) {
+            val matches = digitRegex.findAll(line).toList()
 
-        val formatMap:Map<Format, Regex> = mapOf(
-            Format.REG_NAME_MARKS to Regex("""^(\d{10})\s+([\w. ]+?)\s+(\d{1,3}(?:\.\d{0,2})?)$"""),
-            Format.REG_NAME_GRADE to Regex("""^(\d{10})\s+([\w. ]+?)\s+([A-D][+-]?|F)$"""),
-            Format.REG_MARKS to Regex("""^(\d{10})\s+(\d{1,3}(?:\.\d{0,2})?)$"""),
-            Format.REG_NAME_CREDIT_CG to
-                Regex("""^(\d{10})\s+[\d-]+\s+([\w. ]+?)\s+(\d{1,3}(?:\.\d{0,2})?)\s+(\d(?:\.\d{0,2})?)\s*\S*$"""),
-            Format.CG_REG_NAME to Regex("""^(\d(?:\.\d{0,2})?)\s+\S+\s+(\d{10})\s+\d+\s+([\w. ]+?)$"""),
-            Format.MARKS_REG_NAME to Regex("""^(\d{1,3}(?:\.\d{0,2})?)\s+(\d{10})\s+\d+\s+([\w. ]+?)$"""),
-            Format.REG_NAME_CG to Regex("""^\S*\s*(\d{10})\s+([\w. ]+?)\s+(\d(?:\.\d{0,2})?)\s*\S*$"""),
-        )
-
-        var found = false
-        for((format,pattern) in formatMap) {
-            Log.i(TAG,"pattern: $format")
-            for(line in lines) {
-                val matches = pattern.findAll(line);
-                for (match in matches) {
-                    found=true
-                    //populate student
-                    when(format) {
-                        Format.REG_NAME_MARKS -> {
-                            val (reg, name, marks) = match.destructured
-                            result.addStudent(name, reg, credit, marks.toDouble().toInt())
-                        }
-                        Format.REG_NAME_GRADE -> {
-                            val (reg, name, grade) = match.destructured
-                            result.addStudent(name, reg, credit, grade)
-                        }
-                        Format.REG_MARKS -> {
-                            val (reg, marks) = match.destructured
-                            result.addStudent(reg,credit,marks.toDouble().toInt());
-                        }
-                        Format.REG_NAME_CREDIT_CG -> {
-                            val (reg,name, totalCredit,cg) = match.destructured
-                            result.addStudent(name,reg,totalCredit.toDouble(),cg.toDouble());
-                        }
-                        Format.CG_REG_NAME->{
-                            val (cg,reg,name) = match.destructured
-                            result.addStudent(name,reg,credit,cg.toDouble());
-                        }
-                        Format.REG_NAME_CG->{
-                            val (reg,name,cg) = match.destructured
-                            result.addStudent(name,reg,credit,cg.toDouble());
-                        }
-                        Format.MARKS_REG_NAME->{
-                            val (marks,reg,name) = match.destructured
-                            result.addStudent(name,reg,credit,marks.toDouble().toInt());
+            when (matches.size) {
+                1 -> {
+                    // Line has exactly one 10-digit number → valid row
+                    fixedRows.add(line)
+                }
+                else -> {
+                    // Multiple numbers → Split at the **second** 10-digit number
+                    var startIndex = 0
+                    for ((index, match) in matches.withIndex()) {
+                        val endIndex = match.range.first
+                        if (index == 1) {  // Found second 10-digit number
+                            fixedRows.add(line.substring(0, endIndex).trim())
+                            fixedRows.add(line.substring(endIndex).trim())
+                            break
                         }
                     }
                 }
             }
-            if(found) break;
         }
+
+        return fixedRows
+    }
+
+
+
+
+
+
+    //detect pdf format then extract info and populate
+    fun detectPdfFormatAndPopulate(result:ResultCalculator,lines: List<String>,credit:Double) {
+//        Log.i(Helper.TAG,"$lines")
+        Log.i(TAG,"Inside Extractor")
+        val patterns = mapOf(
+            Format.REG to Regex("""(?<!\S)(\d{10})(?!\S)"""),
+            Format.NAME to Regex("""\d{10}.+?([A-Za-z. ]+?)(?=\s+[A-CF][+-]?(?:\s+|$)|\s+\d|$)"""),
+            Format.GRADE to Regex("""\d{10}.+?\s+([A-CF][+/-]?)(?!\S)"""),
+            Format.CG to Regex("""\d{10}.+?\s+(\d(?:\.\d{0,2})?)(?!\S)"""),
+            Format.MARKS to Regex("""\d{10}.+?(\d{1,3}(?:\.\d{0,2})?)"""),
+            Format.CREDIT to Regex("""\d{10}.+?(\d{1,3}(?:\.\d{0,2})?)(?!\S)\s+\d(?:\.\d{0,2})?\s+[A-CF][+-]?$"""),
+        )
+
+        val students:MutableList<MutableList<String?>> = mutableListOf(mutableListOf());
+        var isMarks = false;
+        var isNull = false;
+        for(line in lines) {
+            val totalElements = line.split(" ").size
+            val studentInfo:MutableList<String?> = mutableListOf();
+            if(totalElements > 13)continue
+
+//            Log.i(Helper.TAG,"Line: $line");
+            for((format,pattern) in patterns)
+                studentInfo.add(pattern.find(line)?.groupValues?.get(1))
+
+            val reg = studentInfo.getOrNull(0)?:continue;
+            val marks:Int? = studentInfo.getOrNull(4)?.toDoubleOrNull()?.toInt()
+            val totalCredit:Double? = studentInfo.getOrNull(5)?.toDoubleOrNull();
+
+            students.add(studentInfo);
+            if(marks!=null && marks > 4) {
+                isMarks = true;
+            }
+            if(marks== null || totalCredit!=null)
+                isNull = true;
+        }
+        if(isNull) isMarks = false;
+        Log.i(Helper.TAG,"$isMarks");
+
+        var found = false;
+        for(studentInfo in students)
+        {
+            val reg:String = studentInfo.getOrNull(0)?:continue;
+            val marks:Int = studentInfo.getOrNull(4)?.toDoubleOrNull()?.toInt()?:0
+            val name:String = studentInfo.getOrNull(1)?:"N/A"
+            val grade:String = studentInfo.getOrNull(2)?:"F"
+            val cg:Double?  = studentInfo.getOrNull(3)?.toDoubleOrNull()
+            val totalCredit:Double = studentInfo.getOrNull(5)?.toDoubleOrNull()?:credit;
+
+            Log.i(Helper.TAG,"$reg $name $totalCredit $grade $cg $marks")
+            found=true;
+            if(isMarks)
+                result.addStudent(name,reg,totalCredit,if(marks>100)marks/10 else marks);
+            else {
+                if(cg!=null)
+                    result.addStudent(name, reg, totalCredit, cg);
+                else
+                    result.addStudent(name, reg, totalCredit, grade);
+            }
+        }
+
         if(!found)
         {
             Log.i(Helper.TAG,"Invalid Format!")
             Toast.makeText(context,"Failed To Read Pdf File\nInvalid Format!", Toast.LENGTH_LONG).show()
         }
     }
-
-
-
-
-
-
-
-
 
 }

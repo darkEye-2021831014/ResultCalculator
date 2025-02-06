@@ -6,8 +6,12 @@
         <item>Marks</item>
     </string-array>
     <string-array name="pdfTypes">
-        <item>REG/anything/CG</item>
-        <item>REG/anything/Marks</item>
-        <item>REG/anything/LatterGrade</item>
+        <item>.. | REG | .. | MARKS | ..</item>
+        <item>REG | NAME | MARKS</item>
+        <item>REG | NAME | GRADE</item>
+        <item>REG/../NAME/../CREDIT/CG/..</item>
+        <item>CG/REG/NAME</item>
+        <item>MARKS/REG/NAME</item>
+        <item>../REG/NAME/CG/..</item>
     </string-array>
 </resources>

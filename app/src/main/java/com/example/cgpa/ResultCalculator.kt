@@ -89,7 +89,7 @@ class ResultCalculator() {
             student = Student(name, regNo);
             newStudent = true;
         }
-        else
+        else if(name !="N/A")
             student.setName(name);
 
         student.result(marks,credit)
@@ -105,7 +105,7 @@ class ResultCalculator() {
             student = Student(name, regNo);
             newStudent = true;
         }
-        else
+        else if(name !="N/A")
             student.setName(name);
 
         student.result(cg,credit)
@@ -121,7 +121,7 @@ class ResultCalculator() {
             student = Student(name, regNo);
             newStudent = true;
         }
-        else
+        else if(name !="N/A")
             student.setName(name);
 
         student.result(grade,credit)

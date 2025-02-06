@@ -6,7 +6,7 @@ import com.example.cgpa.Converter.marksToCg
 
 class Student : Comparable<Student> {
     // setters
-    private var name: String? = null
+    private var name: String? = "N/A"
     private var regNo: String
     private var credit: Double
     private var cg: Double
