@@ -31,6 +31,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        //instantly switch to expanse tracer for debugging
+        val intent = Intent(this, ExpenseTrackerMain::class.java);
+        startActivity(intent);
+        finish();
+        //end of switching
+
+
         myFolder = File(getExternalFilesDir(null), Helper.FOLDER)
 
         if (!myFolder.exists()) {

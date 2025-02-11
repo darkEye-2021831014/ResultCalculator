@@ -2,10 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
-
 
     <application
         android:allowBackup="true"
@@ -18,6 +17,9 @@
         android:theme="@style/Theme.CGPA"
         tools:targetApi="31">
         <activity
+            android:name=".ExpenseTrackerMain"
+            android:exported="false" />
+        <activity
             android:name=".AdvanceMode"
             android:exported="false" />
         <activity
@@ -29,6 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

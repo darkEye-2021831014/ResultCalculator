@@ -1,0 +1,49 @@
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?android:attr/buttonBarStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_menu"
+        android:layout_weight="1"
+        android:backgroundTint="@color/screen"
+        android:contentDescription="MenuButton"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:text="Expense Tracker"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        />
+    <ImageButton
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/ic_search"
+        android:backgroundTint="@color/screen"
+        android:contentDescription="SearchButton"
+        />
+    <ImageButton
+        android:id="@+id/calender"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/ic_calendar"
+        android:backgroundTint="@color/screen"
+        android:contentDescription="calender"
+        />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

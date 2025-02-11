@@ -7,5 +7,7 @@
     <color name="lime">#32CA39</color>
     <color name="primaryBlue">#0000FF</color>
     <color name="purple">#341539</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="screen">#141218</color>
 
 </resources>
