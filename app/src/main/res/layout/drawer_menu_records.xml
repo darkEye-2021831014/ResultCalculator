@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@color/lessBlack"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Main Menu"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_marginTop="24dp"
+        app:autoSizeMaxTextSize="28sp"
+        app:autoSizeMinTextSize="18sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        />
+
+    <View
+        android:id="@+id/d1"
+        android:layout_width="match_parent"
+        android:layout_height="0.001dp"
+        android:layout_marginTop="22dp"
+        android:background="?android:attr/listDivider" />
+
+    <Button
+        android:id="@+id/resultCalculator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_marginStart="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:text="RESULT CALCULATOR"
+        android:textColor="@color/green"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.001dp"
+        android:layout_marginTop="12dp"
+        android:background="?android:attr/listDivider" />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_marginStart="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="12dp"
+        android:textStyle="bold"
+        android:text="EXIT"
+        android:textColor="@color/red"/>
+</LinearLayout>

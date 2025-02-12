@@ -1,9 +1,12 @@
 package com.example.cgpa
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -18,6 +21,9 @@ class ExpenseTrackerMain : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        window.statusBarColor = ContextCompat.getColor(this, R.color.lessBlack)
+        setNavBarColor(this, R.color.lessBlack) // Matches default three-button color (usually black or system theme)
+
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
@@ -36,5 +42,8 @@ class ExpenseTrackerMain : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
             .commit()
+    }
+    private fun setNavBarColor(activity: Activity, colorResId: Int) {
+            activity.window.navigationBarColor = ContextCompat.getColor(activity, colorResId)
     }
 }

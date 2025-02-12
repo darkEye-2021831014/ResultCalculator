@@ -3,47 +3,181 @@
     style="?android:attr/buttonBarStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:layout_marginTop="18dp"
+    android:background="@color/lessBlack">
 
-    <ImageButton
-        android:id="@+id/menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_menu"
-        android:layout_weight="1"
-        android:backgroundTint="@color/screen"
-        android:contentDescription="MenuButton"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="20"
-        android:text="Expense Tracker"
-        android:textColor="@color/white"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:autoSizeMaxTextSize="16sp"
-        app:autoSizeMinTextSize="8sp"
-        app:autoSizeStepGranularity="2sp"
-        app:autoSizeTextType="uniform"
-        />
-    <ImageButton
-        android:id="@+id/search"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:src="@drawable/ic_search"
-        android:backgroundTint="@color/screen"
-        android:contentDescription="SearchButton"
-        />
-    <ImageButton
-        android:id="@+id/calender"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:src="@drawable/ic_calendar"
-        android:backgroundTint="@color/screen"
-        android:contentDescription="calender"
-        />
+<!--    Top header-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_menu"
+            android:backgroundTint="@color/lessBlack"
+            android:contentDescription="MenuButton"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Expense Tracker"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            />
+        <ImageButton
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_search"
+            android:backgroundTint="@color/lessBlack"
+            android:contentDescription="SearchButton"
+            />
+        <ImageButton
+            android:id="@+id/calender"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_calendar"
+            android:backgroundTint="@color/lessBlack"
+            android:contentDescription="calender"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
+<!--    Second Header-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <TextView
+            android:id="@+id/currentYear"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="2025"
+            android:textAlignment="viewStart"
+            android:layout_weight="2"
+            android:paddingStart="13dp"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/gray" />
+        <TextView
+            android:id="@+id/expenseText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Expenses"
+            android:textAlignment="center"
+            android:layout_weight="2"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/gray" />
+        <TextView
+            android:id="@+id/IncomeText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Income"
+            android:textAlignment="center"
+            android:layout_weight="2"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/gray" />
+        <TextView
+            android:id="@+id/balanceText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Balance"
+            android:textAlignment="viewEnd"
+            android:paddingEnd="13dp"
+            android:layout_weight="2"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/gray" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+<!--    Third Header-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/monthSelector"
+            style="?android:attr/buttonBarButtonStyle"
+            app:autoSizeMaxTextSize="18sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_marginStart="0dp"
+            android:gravity="start"
+            android:layout_marginTop="0dp"
+            android:paddingStart="13dp"
+            android:background="@color/screen"
+            android:drawableEnd="@drawable/ic_down"
+            android:text="Feb"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/expenseTextValue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="8,700"
+            android:textAlignment="center"
+            android:layout_weight="2"
+            android:paddingTop="12dp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/incomeTextValue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="6,400"
+            android:paddingTop="12dp"
+
+            android:textAlignment="center"
+            android:layout_weight="2"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/balanceTextValue"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="2,300"
+            android:paddingTop="12dp"
+
+            android:textAlignment="viewEnd"
+            android:layout_weight="2"
+            android:paddingEnd="18dp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/white"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -3,7 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/dNav"
+        android:layout_width="match_parent"
+        android:layout_height="0.0001dp"
+        android:background="?android:attr/listDivider" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lessBlack"
+        android:orientation="horizontal">
 
     <Button
         android:id="@+id/records"
@@ -51,8 +63,10 @@
             android:src="@drawable/ic_add"
             android:layout_gravity="center|top"
             app:tint="@color/black"
+            app:fabSize="normal"
             app:backgroundTint="@color/yellow"
-            android:contentDescription="Add Item" />
+            android:contentDescription="Add Item"
+            app:shapeAppearanceOverlay="@style/CircularFab"/>
     </FrameLayout>
 
     <Button
@@ -84,5 +98,6 @@
         android:text="Me"
         android:drawableTop="@drawable/ic_person"
         android:tint="@color/gray" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
