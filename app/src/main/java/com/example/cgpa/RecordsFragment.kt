@@ -19,9 +19,11 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +39,9 @@ class RecordsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private val viewModel by activityViewModels<SharedViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,32 +76,76 @@ class RecordsFragment : Fragment() {
             requireActivity().finishAffinity()
         }
 
+
+        //get data
         val recyclerView: RecyclerView = view.findViewById(R.id.recordContainer)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val items = mutableListOf(
-            Date("Feb 22  Wednesday","Expense: 320  Income: 12,000"),
-            Item("Food", getIcon(R.drawable.ic_name),"+4,500"),
-            Item("Gartilam", getIcon(R.drawable.ic_food),"-800"),
-            Date("Mar 19  Saturday","Expense: 12,000"),
-            Item("Pet", getIcon(R.drawable.ic_add),"-4,300"),
-        );
+        viewModel.userData.observe(viewLifecycleOwner) { data ->
+            val items:MutableList<Any> = mutableListOf();
+            var date:String = "n/a";
 
-        recyclerView.adapter = ItemAdapter(
-            items,
-            onEditClick = { item ->
-                // Handle edit action
-                Toast.makeText(requireContext(), "Editing: $item", Toast.LENGTH_SHORT).show()
-            },
-            onDeleteClick = { item ->
-                // Handle delete action
-                Toast.makeText(requireContext(), "Deleting: $item", Toast.LENGTH_SHORT).show()
-            },
-            onDetailsClick = { item ->
-                // Handle details action
-                Toast.makeText(requireContext(), "Details of: $item", Toast.LENGTH_SHORT).show()
+            val tmp:MutableList<Item> = mutableListOf();
+            var expense:Long = 0L
+            var income =0L
+            var dateText:String="";
+
+            for(item in data) {
+                if(item.date!=date) {
+                    if(date != "n/a") {
+                        if(expense==0L)
+                            items.add(Date(dateText,"Income: $income"))
+                        else if(income ==0L)
+                            items.add(Date(dateText,"Expense: $expense"))
+                        else
+                            items.add(Date(dateText,"Expense: $expense  Income: $income"))
+                        for(tmpItem in tmp)
+                            items.add(tmpItem);
+                        tmp.clear();
+                    }
+                    dateText = item.dateData;
+                    date = item.date
+                }
+
+                tmp.add(Item(item.name,item.icon,item.valueText))
+                if(item.value<0) expense+= abs(item.value);
+                else income += abs(item.value)
             }
-        )
+
+            if(date != "n/a") {
+                if(expense==0L)
+                    items.add(Date(dateText,"Income: $income"))
+                else if(income ==0L)
+                    items.add(Date(dateText,"Expense: $expense"))
+                else
+                    items.add(Date(dateText,"Expense: $expense  Income: $income"))
+                for(tmpItem in tmp)
+                    items.add(tmpItem);
+                tmp.clear();
+            }
+
+            //list of data
+
+            recyclerView.adapter = ItemAdapter(
+                items,
+                onEditClick = { item ->
+                    // Handle edit action
+                    Toast.makeText(requireContext(), "Editing: $item", Toast.LENGTH_SHORT).show()
+                },
+                onDeleteClick = { item ->
+                    // Handle delete action
+                    Toast.makeText(requireContext(), "Deleting: $item", Toast.LENGTH_SHORT).show()
+                },
+                onDetailsClick = { item ->
+                    // Handle details action
+                    Toast.makeText(requireContext(), "Details of: $item", Toast.LENGTH_SHORT).show()
+                }
+            )
+
+        }
+
+
+
 
 
         return view
@@ -104,10 +153,6 @@ class RecordsFragment : Fragment() {
 
 
 
-    private fun getIcon(icon:Int):Drawable?
-    {
-        return ContextCompat.getDrawable(requireContext(), icon)
-    }
 
     companion object {
         /**

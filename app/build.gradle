@@ -46,4 +46,7 @@ dependencies {
     androidTestImplementation libs.androidx.espresso.core
     implementation libs.itext7.core
     implementation libs.material
+
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.fragment.ktx
 }

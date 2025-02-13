@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ExpenseTrackerMain : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,13 +23,19 @@ class ExpenseTrackerMain : AppCompatActivity() {
             insets
         }
         window.statusBarColor = ContextCompat.getColor(this, R.color.lessBlack)
-        setNavBarColor(this, R.color.lessBlack) // Matches default three-button color (usually black or system theme)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.lessBlack)
 
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
         val searchButton = findViewById<Button>(R.id.Charts)
         val profileButton = findViewById<Button>(R.id.budget)
+
+        val addItemButton = findViewById<FloatingActionButton>(R.id.addItem)
+        addItemButton.setOnClickListener {
+            val bottomSheet = AddItemFragment()
+            bottomSheet.show(supportFragmentManager, "AddItemFragment")
+        }
 
         homeButton.setOnClickListener { replaceFragment(RecordsFragment()) }
 //        searchButton.setOnClickListener { replaceFragment(SearchFragment()) }

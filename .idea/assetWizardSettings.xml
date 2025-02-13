@@ -307,7 +307,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/food_bank/baseline_food_bank_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/phone_android/baseline_phone_android_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -318,8 +318,8 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="898989" />
-                            <entry key="outputName" value="ic_food" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../stats.svg" />
+                            <entry key="outputName" value="ic_phone" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../drinks.svg" />
                           </map>
                         </option>
                       </PersistentState>

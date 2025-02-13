@@ -2,9 +2,12 @@ package com.example.cgpa
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
@@ -65,6 +68,13 @@ class Helper(private val context: Context) {
             val dialog = builder.create()
             dialog.setCancelable(false);
             dialog.show()
+        }
+
+
+        //expense tracker
+        fun getIcon(context:Context,icon:Int): Drawable?
+        {
+            return ContextCompat.getDrawable(context, icon)
         }
 
     }

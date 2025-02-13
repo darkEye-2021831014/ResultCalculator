@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Set status bar color -->
+        <item name="android:statusBarColor">@color/lessBlack</item>
+        <!-- Set navigation bar color -->
+        <item name="android:navigationBarColor">@color/lessBlack</item>
+        <!-- Optionally, make the status bar icons light -->
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Optionally, make the navigation bar icons light -->
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>
