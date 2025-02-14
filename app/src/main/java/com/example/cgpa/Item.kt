@@ -5,7 +5,8 @@ import android.graphics.drawable.Drawable
 data class Item(
     val name:String,
     val icon:Drawable?,
-    val value:String
+    val value:Long,
+    val info:ItemInfo
 )
 
 data class Date(
@@ -14,10 +15,20 @@ data class Date(
 )
 
 data class ItemInfo(
-    val name:String,
-    val icon:Drawable?,
-    val value:Long,
-    val valueText:String,
+    var name:String,
+    val icon:String?,
+    val amount:Long,
+    val isExpense:Boolean,
+    val date:Int,
+    val month:Int,
+    val year: Int,
+    val monthName:String,
+    val dateName:String,
+    val note:String?,
+)
+
+data class DailyExchange(
     val date:String,
-    val dateData:String
+    var expense:Long,
+    var income:Long,
 )

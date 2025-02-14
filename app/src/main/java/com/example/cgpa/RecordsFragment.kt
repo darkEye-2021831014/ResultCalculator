@@ -3,12 +3,10 @@ package com.example.cgpa
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,161 +14,152 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileOutputStream
+import java.io.FileReader
+import java.io.IOException
 import kotlin.math.abs
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RecordsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RecordsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private val viewModel by activityViewModels<SharedViewModel>()
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_records, container, false)
+        //load saved data
+        loadItemInfo();
 
-        //three dot operation
-        val menu:ImageButton = view.findViewById(R.id.menu)
-        val drawer:DrawerLayout = view.findViewById(R.id.drawer_Layout_Records)
-        menu.setOnClickListener {
-            drawer.openDrawer(GravityCompat.START) // Opens from the left
-        }
+        // Handle menu button click
+        val menu: ImageButton = view.findViewById(R.id.menu)
+        val drawer: DrawerLayout = view.findViewById(R.id.drawer_Layout_Records)
+        menu.setOnClickListener { drawer.openDrawer(GravityCompat.START) }
 
-        //inside three dot menu
-        //result calculator
+        // Navigate to Result Calculator
         view.findViewById<Button>(R.id.resultCalculator).setOnClickListener {
-            val intent = Intent(requireContext(), MainActivity::class.java);
-            startActivity(intent);
-            requireActivity().finish();
+            startActivity(Intent(requireContext(), MainActivity::class.java))
+            requireActivity().finish()
         }
-        //exit app
-        view.findViewById<Button>(R.id.exit).setOnClickListener{
+
+        // Exit App
+        view.findViewById<Button>(R.id.exit).setOnClickListener {
             requireActivity().finishAffinity()
         }
 
-
-        //get data
-        val recyclerView: RecyclerView = view.findViewById(R.id.recordContainer)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        viewModel.userData.observe(viewLifecycleOwner) { data ->
-            val items:MutableList<Any> = mutableListOf();
-            var date:String = "n/a";
-
-            val tmp:MutableList<Item> = mutableListOf();
-            var expense:Long = 0L
-            var income =0L
-            var dateText:String="";
-
-            for(item in data) {
-                if(item.date!=date) {
-                    if(date != "n/a") {
-                        if(expense==0L)
-                            items.add(Date(dateText,"Income: $income"))
-                        else if(income ==0L)
-                            items.add(Date(dateText,"Expense: $expense"))
-                        else
-                            items.add(Date(dateText,"Expense: $expense  Income: $income"))
-                        for(tmpItem in tmp)
-                            items.add(tmpItem);
-                        tmp.clear();
-                    }
-                    dateText = item.dateData;
-                    date = item.date
-                }
-
-                tmp.add(Item(item.name,item.icon,item.valueText))
-                if(item.value<0) expense+= abs(item.value);
-                else income += abs(item.value)
-            }
-
-            if(date != "n/a") {
-                if(expense==0L)
-                    items.add(Date(dateText,"Income: $income"))
-                else if(income ==0L)
-                    items.add(Date(dateText,"Expense: $expense"))
-                else
-                    items.add(Date(dateText,"Expense: $expense  Income: $income"))
-                for(tmpItem in tmp)
-                    items.add(tmpItem);
-                tmp.clear();
-            }
-
-            //list of data
-
-            recyclerView.adapter = ItemAdapter(
-                items,
-                onEditClick = { item ->
-                    // Handle edit action
-                    Toast.makeText(requireContext(), "Editing: $item", Toast.LENGTH_SHORT).show()
-                },
-                onDeleteClick = { item ->
-                    // Handle delete action
-                    Toast.makeText(requireContext(), "Deleting: $item", Toast.LENGTH_SHORT).show()
-                },
-                onDetailsClick = { item ->
-                    // Handle details action
-                    Toast.makeText(requireContext(), "Details of: $item", Toast.LENGTH_SHORT).show()
-                }
-            )
-
-        }
-
-
-
-
+        setupRecyclerView(view)
 
         return view
     }
 
+    private fun setupRecyclerView(view: View) {
+        val recyclerView: RecyclerView = view.findViewById(R.id.recordContainer)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        viewModel.userData.observe(viewLifecycleOwner) { data ->
+            val items = processUserData(data)
 
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecordsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecordsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+            recyclerView.adapter = ItemAdapter(
+                items,
+                onEditClick = { item -> showToast("Editing: $item") },
+                onDeleteClick = { item -> deleteItem(item as Item) },
+                onDetailsClick = { item -> itemDetails(item as Item) }
+            )
+        }
     }
+
+
+    private fun processUserData(data: List<ItemInfo>): MutableList<Any> {
+        val items = mutableListOf<Any>()
+        var date = -1
+        val tmp = mutableListOf<Item>()
+        var expense = 0L
+        var income = 0L
+        var dateText = ""
+
+        for (item in data) {
+            if (item.date != date) {
+                if (date != -1) {
+                    addDateHeader(items, dateText, expense, income)
+                    items.addAll(tmp)
+                    tmp.clear()
+                }
+                dateText = getDateText(item)
+                date = item.date
+                expense = 0L
+                income = 0L
+            }
+
+            tmp.add(Item(item.note ?: item.name, Helper.loadIcon(item.icon,requireContext()), item.amount,item))
+            if (item.isExpense) expense += abs(item.amount)
+            else income += abs(item.amount)
+        }
+
+        if (date != -1) {
+            addDateHeader(items, dateText, expense, income)
+            items.addAll(tmp)
+        }
+
+        return items
+    }
+
+    private fun addDateHeader(items: MutableList<Any>, dateText: String, expense: Long, income: Long) {
+        val summary = when {
+            expense == 0L -> "Income: $income"
+            income == 0L -> "Expense: $expense"
+            else -> "Expense: $expense  Income: $income"
+        }
+        items.add(Date(dateText, summary))
+    }
+
+    private fun getDateText(itemInfo: ItemInfo): String {
+        return "${itemInfo.monthName} ${itemInfo.date}  ${itemInfo.dateName}"
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+
+
+    private fun loadItemInfo()
+    {
+//        Helper.deleteAllSavedIcons(requireContext())
+//        Helper.saveItemInfoList(viewModel.userData,requireContext());
+
+        val itemInfo = Helper.retrieveItemInfo(requireContext());
+        for(item in itemInfo)
+        {
+            viewModel.setData(item);
+        }
+    }
+
+
+    fun deleteItem(item:Item)
+    {
+        val itemInfo = item.info
+        Helper.showConfirmationDialog(requireContext(), "Are you sure you want to delete?"){
+            confirm->
+            if(confirm)
+                viewModel.removeData(itemInfo)
+        }
+    }
+
+    fun itemDetails(item:Item)
+    {
+        viewModel.selectedItem.value = item.info;
+        val bottomSheet = ItemDetailsFregment()
+        bottomSheet.show(requireActivity().supportFragmentManager, "ItemDetailsFregment")
+    }
+
+
 }

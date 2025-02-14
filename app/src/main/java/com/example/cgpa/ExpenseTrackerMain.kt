@@ -3,6 +3,7 @@ package com.example.cgpa
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,8 +12,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.io.File
 
 class ExpenseTrackerMain : AppCompatActivity() {
+
+    private lateinit var myFolder:File;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,6 +30,12 @@ class ExpenseTrackerMain : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lessBlack)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.lessBlack)
 
+        //create file inside folder if it doesn't exist
+        myFolder = File(getExternalFilesDir(null), Helper.FOLDER)
+
+        if (!myFolder.exists()) {
+            val success = myFolder.mkdirs()
+        }
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)

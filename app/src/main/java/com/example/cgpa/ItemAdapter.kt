@@ -49,7 +49,7 @@ class ItemAdapter(
             holder.itemLayout.visibility = View.VISIBLE
 
             holder.itemName.text = item.name
-            holder.itemValue.text = item.value
+            holder.itemValue.text = item.value.toString()
             setDrawableStart(holder, item.icon)
 
             // Long press to show options

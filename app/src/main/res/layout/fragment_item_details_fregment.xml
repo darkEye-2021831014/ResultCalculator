@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ItemDetailsFregment"
+    android:orientation="vertical"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_back"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/deatils"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Details"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_weight="10"
+            app:autoSizeMaxTextSize="32sp"
+            app:autoSizeMinTextSize="18sp"
+            app:autoSizeStepGranularity="2sp"
+            android:maxLines="1"
+            android:gravity="center"
+            app:autoSizeTextType="uniform"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Food"
+        android:drawableStart="@drawable/food_record"
+        android:textAlignment="viewStart"
+        android:gravity="center|start"
+        app:autoSizeMaxTextSize="28sp"
+        android:drawablePadding="28dp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeStepGranularity="2sp"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+
+        android:textAlignment="viewStart"
+        android:gravity="center|start"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/itemType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Income"
+            android:layout_weight="1"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingStart="60dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amount"
+
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/itemAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3200"
+            android:layout_weight="1"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingStart="42dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/itemDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feb 14, 2025"
+            android:layout_weight="1"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingStart="61dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/noteView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/itemNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="For Regular Cost"
+            android:layout_weight="1"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:paddingStart="61dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/dItem"
+            android:layout_width="match_parent"
+            android:layout_height="0.000001dp"
+            android:background="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/delete" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="bottom|center"
+            android:maxLines="1"
+            android:padding="0dp"
+            android:text="Delete"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="2sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:paddingBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

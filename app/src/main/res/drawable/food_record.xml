@@ -1,7 +1,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval"> <!-- Use oval to create a perfect circle -->
-            <solid android:color="@color/green" /> <!-- Fill the circle with color -->
+            <solid android:color="@color/yellow" /> <!-- Fill the circle with color -->
             <size
                 android:width="48dp"
                 android:height="48dp" />
