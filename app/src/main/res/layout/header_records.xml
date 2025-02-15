@@ -62,7 +62,7 @@
             android:id="@+id/currentYear"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="2025"
+            android:text="2029"
             android:textAlignment="viewStart"
             android:layout_weight="2"
             android:paddingStart="13dp"
@@ -133,7 +133,7 @@
             android:paddingStart="13dp"
             android:background="@color/screen"
             android:drawableEnd="@drawable/ic_down"
-            android:text="Feb"
+            android:text="Jan"
             android:drawableTint="@color/white"
             android:textColor="@color/white" />
 

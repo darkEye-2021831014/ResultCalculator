@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable
 data class Item(
     val name:String,
     val icon:Drawable?,
-    val value:Long,
+    val value:String,
     val info:ItemInfo
 )
 

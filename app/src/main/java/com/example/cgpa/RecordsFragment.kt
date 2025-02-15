@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,7 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -26,18 +29,35 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.IOException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
 class RecordsFragment : Fragment() {
 
     private val viewModel: SharedViewModel by activityViewModels()
 
+    private lateinit var incomeText:TextView
+    private lateinit var expenseText:TextView
+    private lateinit var balanceText:TextView
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_records, container, false)
 
+        val currentYear:TextView = view.findViewById(R.id.currentYear)
+        val currentMonth:Button = view.findViewById(R.id.monthSelector)
+
+        incomeText = view.findViewById(R.id.incomeTextValue)
+        expenseText = view.findViewById(R.id.expenseTextValue)
+        balanceText = view.findViewById(R.id.balanceTextValue)
+
+
+        currentYear.text = LocalDate.now().year.toString()
+        currentMonth.text = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM"))
 
         // Handle menu button click
         val menu: ImageButton = view.findViewById(R.id.menu)
@@ -60,11 +80,29 @@ class RecordsFragment : Fragment() {
         return view
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView(view: View) {
         val recyclerView: RecyclerView = view.findViewById(R.id.recordContainer)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.userData.observe(viewLifecycleOwner) { data ->
+            var expense:Long=0
+            var income:Long=0
+            val month = LocalDate.now().monthValue;
+            for(itemInfo in data)
+            {
+                if(itemInfo.month == month)
+                {
+                    if(itemInfo.isExpense)expense+=abs(itemInfo.amount)
+                    else income += abs(itemInfo.amount);
+                }
+            }
+
+            incomeText.text = income.toString()
+            expenseText.text = expense.toString()
+            balanceText.text = (income-expense).toString()
+
+
             val items = processUserData(data)
 
             recyclerView.adapter = ItemAdapter(
@@ -98,7 +136,8 @@ class RecordsFragment : Fragment() {
                 income = 0L
             }
 
-            tmp.add(Item(item.note ?: item.name, Helper.loadIcon(item.icon,requireContext()), item.amount,item))
+            tmp.add(Item(item.note ?: item.name, Helper.loadIcon(item.icon,requireContext()),
+                (if(!item.isExpense)"+" else "") + item.amount.toString(),item))
             if (item.isExpense) expense += abs(item.amount)
             else income += abs(item.amount)
         }

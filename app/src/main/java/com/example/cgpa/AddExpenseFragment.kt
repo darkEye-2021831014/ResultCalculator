@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -33,20 +34,18 @@ import kotlin.math.abs
 
 
 
-private const val prefix = "Note : ";
 class AddExpenseFragment : Fragment() {
 
-//    private lateinit var note: EditText
-//    private lateinit var value: EditText
     private val viewModel by activityViewModels<SharedViewModel>()
 
     private var name: String = "N/A"
-    private var icon: Drawable? = null
-    private var iconId:Int=R.drawable.other_records;
+    private var iconId:Int = R.drawable.other_records;
     private lateinit var keyboard:LinearLayout;
     private lateinit var inputField: TextView;
     private lateinit var inputNote: EditText;
     private lateinit var done:Button;
+    private var prevValue:String = ""
+    private var curValue:String = "0"
 
 
 
@@ -58,8 +57,6 @@ class AddExpenseFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_add_expense, container, false)
 
-//        note = view.findViewById(R.id.note)
-//        value = view.findViewById(R.id.value)
         keyboard = view.findViewById(R.id.keyboard);
         inputField = view.findViewById(R.id.inputField);
         inputNote = view.findViewById(R.id.noteField);
@@ -80,16 +77,6 @@ class AddExpenseFragment : Fragment() {
         buttons.forEach { (button, drawable) ->
             button.setOnClickListener { selectButton(buttons.map { it.first }, button, drawable) }
         }
-
-//        value.setOnEditorActionListener { _, actionId, event ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE ||
-//                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-//                addExpense()
-//                true
-//            } else {
-//                false
-//            }
-//        }
 
 
         return view
@@ -122,58 +109,65 @@ class AddExpenseFragment : Fragment() {
         val minus:Button = view.findViewById(R.id.minus)
 
         delete.setOnClickListener {
-            if(inputField.text!="0")
+            if(inputField.text!="0") {
+                if(inputField.text.toString().last()==' ') {
+                    inputField.text = inputField.text.toString().dropLast(1)
+                    inputField.text = inputField.text.toString().dropLast(1)
+                }
                 inputField.text = inputField.text.toString().dropLast(1)
+            }
             if(inputField.text.toString().isEmpty()) {
                 inputField.text = "0"
                 textColor(R.color.white, done);
                 backgroundTint(R.color.lessGray, done);
             }
             inputNote.clearFocus()
-        }
-
-        done.setOnClickListener {
-            if(inputField.text.toString()!="0")
+            curValue = curValue.dropLast(1);
+            Log.i(Helper.TAG,curValue)
+            if(curValue.isEmpty()) {
+                curValue = "0"
+            }
+            if(!inputField.text.toString().contains("+"))
             {
-                addExpense();
-                closeFragment()
+                done.text = "✓"
+                inputField.text = inputField.text.toString().trim();
+                curValue = inputField.text.toString();
             }
         }
 
+        done.setOnClickListener {
+            if(inputField.text.toString().contains("+"))
+            {
+                inputField.text = "${(prevValue.toLong()+curValue.toLong())}"
+                curValue =inputField.text.toString();
+            }
+            else {
+                if (inputField.text.toString() != "0") {
+                    addExpense();
+                    closeFragment()
+                }
+            }
+            done.text = "✓"
+        }
+
+        plus.setOnClickListener {
+            Log.i(Helper.TAG,"$prevValue $curValue")
+            if(inputField.text.toString().contains("+")) {
+                inputField.text = "${(prevValue.toLong()+curValue.toLong())}"
+                curValue =inputField.text.toString();
+            }
+
+            if(inputField.text.toString()!="0") {
+                prevValue = curValue
+                curValue = "0"
+                inputField.text = inputField.text.toString().trim() + " + "
+                textColor(R.color.black, done);
+                backgroundTint(R.color.yellow, done);
+                done.text = "="
+            }
+        }
     }
 
-//    fun noteChanges(){
-//
-//        // Set the initial prefix
-//        inputNote.setText(prefix)
-//        inputNote.setSelection(prefix.length) // Move cursor to the end of the prefix
-//
-//        // Add a TextWatcher to enforce the prefix
-//        inputNote.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                // Remove the listener to avoid infinite loops
-//
-//                // Remove the listener to avoid infinite loops
-//                inputNote.removeTextChangedListener(this)
-//
-//                // Re-add the prefix only if it's missing or partially deleted
-//                var newText = prefix + s.toString().replace(prefix, "")
-//                if(inputNote.text.toString().length<= prefix.length)
-//                    newText=prefix;
-//
-//                inputNote.setText(newText)
-//                inputNote.setSelection(newText.length) // Move cursor to the end
-//
-//
-//                // Re-add the listener
-//                inputNote.addTextChangedListener(this)
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {}
-//        })
-//    }
 
     fun textColor(color:Int,button:Button)
     {
@@ -197,6 +191,7 @@ class AddExpenseFragment : Fragment() {
             textColor(R.color.black, done);
             backgroundTint(R.color.yellow, done);
         }
+        curValue +=value;
         inputNote.clearFocus();
     }
 
@@ -241,23 +236,13 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun selectButton(buttons: List<Button>, selectedButton: Button, drawableId: Int) {
-//        note.visibility = View.VISIBLE
-//        value.visibility = View.VISIBLE
-//        showKeyboard(value)
 
         buttons.forEach { it.isSelected = false }
         selectedButton.isSelected = true
 
         name = selectedButton.text.toString()
         keyboard.visibility=View.VISIBLE
-//        icon = Helper.getIcon(requireContext(), drawable)
         iconId = drawableId;
     }
 
-    private fun showKeyboard(editTextInput: EditText) {
-        editTextInput.requestFocus()
-        val inputMethodManager = requireActivity()
-            .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(editTextInput, InputMethodManager.SHOW_IMPLICIT)
-    }
 }

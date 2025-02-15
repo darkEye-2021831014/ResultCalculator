@@ -317,9 +317,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="898989" />
-                            <entry key="outputName" value="ic_back" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../drinks.svg" />
+                            <entry key="outputName" value="ic_tution" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../tution.svg" />
                           </map>
                         </option>
                       </PersistentState>

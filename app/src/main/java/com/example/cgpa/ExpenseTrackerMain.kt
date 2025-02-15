@@ -61,6 +61,8 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
         // Set default fragment
         replaceFragment(RecordsFragment())
+
+
     }
 
     private fun replaceFragment(fragment: Fragment) {

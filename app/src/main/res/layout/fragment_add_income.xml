@@ -1,14 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddIncomeFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".AddIncomeFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-</FrameLayout>
+        <Button
+            android:id="@+id/salary"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:drawableTop="@drawable/custom_salary"
+            android:padding="0dp"
+            android:layout_weight="1"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="2sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:focusable="true"
+            android:text="Salary" />
+        <Button
+            android:id="@+id/tution"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:drawableTop="@drawable/custom_tution"
+            android:padding="0dp"
+
+            android:layout_weight="1"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="2sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:text="Tution" />
+        <Button
+            android:id="@+id/investment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:drawableTop="@drawable/custom_investment"
+            android:padding="0dp"
+            android:layout_weight="1"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="2sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:textColor="@color/white"
+            android:background="@android:color/transparent"
+            android:text="Investment" />
+
+        <Button
+            android:id="@+id/otherIncome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            app:autoSizeMaxTextSize="16sp"
+            app:autoSizeMinTextSize="2sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            android:maxLines="1"
+            android:padding="0dp"
+            android:drawableTop="@drawable/custom_other"
+            android:layout_weight="1"
+            android:text="Other"
+            android:background="@android:color/transparent"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/custom_keyboard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

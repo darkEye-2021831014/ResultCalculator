@@ -1,10 +1,29 @@
 package com.example.cgpa
 
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Year
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
+import kotlin.math.abs
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +40,19 @@ class AddIncomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val viewModel by activityViewModels<SharedViewModel>()
+
+    private var name: String = "N/A"
+    private var iconId:Int = R.drawable.other_records;
+    private lateinit var keyboard: LinearLayout;
+    private lateinit var inputField: TextView;
+    private lateinit var inputNote: EditText;
+    private lateinit var done:Button;
+    private var prevValue:String = ""
+    private var curValue:String = "0"
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,7 +66,29 @@ class AddIncomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_income, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_income, container, false)
+
+
+        keyboard = view.findViewById(R.id.keyboard);
+        inputField = view.findViewById(R.id.inputField);
+        inputNote = view.findViewById(R.id.noteField);
+        keyboardOperation(view);
+
+
+
+        val buttons = listOf(
+            view.findViewById<Button>(R.id.salary) to R.drawable.salary_records,
+            view.findViewById<Button>(R.id.investment) to R.drawable.investment_records,
+            view.findViewById<Button>(R.id.otherIncome) to R.drawable.other_records,
+            view.findViewById<Button>(R.id.tution) to R.drawable.tution_records,
+        )
+
+        buttons.forEach { (button, drawable) ->
+            button.setOnClickListener { selectButton(buttons.map { it.first }, button, drawable) }
+        }
+
+
+        return view;
     }
 
     companion object {
@@ -55,5 +109,169 @@ class AddIncomeFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun keyboardOperation(view:View) {
+        // Handle number clicks
+        val numberButtons = listOf(
+            R.id.btn_0 to "0",
+            R.id.btn_1 to "1",
+            R.id.btn_2 to "2",
+            R.id.btn_3 to "3",
+            R.id.btn_4 to "4",
+            R.id.btn_5 to "5",
+            R.id.btn_6 to "6",
+            R.id.btn_7 to "7",
+            R.id.btn_8 to "8",
+            R.id.btn_9 to "9"
+        )
+
+        for ((buttonId, value) in numberButtons) {
+            view.findViewById<Button>(buttonId).setOnClickListener { appendText(value) }
+        }
+
+        val delete:Button = view.findViewById(R.id.btn_del)
+        done = view.findViewById(R.id.btn_done)
+
+        val plus:Button = view.findViewById(R.id.plus)
+        val minus:Button = view.findViewById(R.id.minus)
+
+        delete.setOnClickListener {
+            if(inputField.text!="0") {
+                if(inputField.text.toString().last()==' ') {
+                    inputField.text = inputField.text.toString().dropLast(1)
+                    inputField.text = inputField.text.toString().dropLast(1)
+                }
+                inputField.text = inputField.text.toString().dropLast(1)
+            }
+            if(inputField.text.toString().isEmpty()) {
+                inputField.text = "0"
+                textColor(R.color.white, done);
+                backgroundTint(R.color.lessGray, done);
+            }
+            inputNote.clearFocus()
+            curValue = curValue.dropLast(1);
+            Log.i(Helper.TAG,curValue)
+            if(curValue.isEmpty()) {
+                curValue = "0"
+            }
+            if(!inputField.text.toString().contains("+"))
+            {
+                done.text = "✓"
+                inputField.text = inputField.text.toString().trim();
+                curValue = inputField.text.toString();
+            }
+        }
+
+        done.setOnClickListener {
+            if(inputField.text.toString().contains("+"))
+            {
+                inputField.text = "${(prevValue.toLong()+curValue.toLong())}"
+                curValue =inputField.text.toString();
+            }
+            else {
+                if (inputField.text.toString() != "0") {
+                    addExpense();
+                    closeFragment()
+                }
+            }
+            done.text = "✓"
+        }
+
+        plus.setOnClickListener {
+            Log.i(Helper.TAG,"$prevValue $curValue")
+            if(inputField.text.toString().contains("+")) {
+                inputField.text = "${(prevValue.toLong()+curValue.toLong())}"
+                curValue =inputField.text.toString();
+            }
+
+            if(inputField.text.toString()!="0") {
+                prevValue = curValue
+                curValue = "0"
+                inputField.text = inputField.text.toString().trim() + " + "
+                textColor(R.color.black, done);
+                backgroundTint(R.color.yellow, done);
+                done.text = "="
+            }
+        }
+
+    }
+
+
+    fun textColor(color:Int,button:Button)
+    {
+        button.setTextColor(ContextCompat.getColor(requireContext(), color))
+    }
+    fun backgroundTint(color:Int,button:Button)
+    {
+        val colorStateList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+        button.backgroundTintList = colorStateList
+    }
+
+
+    private fun appendText(value: String) {
+        if(inputField.text.toString()=="0")
+            inputField.text = value
+        else {
+            inputField.text = inputField.text.toString() + value
+        }
+        if(inputField.text.toString()!="0" && !inputField.text.toString().contains("+")) {
+            textColor(R.color.black, done);
+            backgroundTint(R.color.yellow, done);
+        }
+        curValue +=value;
+        inputNote.clearFocus();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun addExpense() {
+        val enteredText = inputField.text.toString().trim()
+        val enteredNote = inputNote.text.toString().trim()
+        var note:String? = null
+
+        if (enteredNote.isNotEmpty()) note = enteredNote;
+
+        if (enteredText.isNotEmpty()) {
+            val cash = enteredText.toLong()
+
+            val calendar = Calendar.getInstance()
+            val date = calendar.get(Calendar.DAY_OF_MONTH)
+            val month = LocalDate.now().monthValue
+            val monthName = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM"))
+            val dateName = SimpleDateFormat("EEEE", Locale.getDefault()).format(calendar.time)
+            val year = Year.now().value
+
+            val item = ItemInfo(name, Helper.saveIcon(iconId,requireContext()), cash, false, date, month, year, monthName, dateName,note)
+            viewModel.setData(item)
+
+            //save item info in file
+            Helper.saveItemInfoList(viewModel.userData,requireContext())
+
+            closeFragment()
+        } else {
+            Toast.makeText(requireContext(), "Please enter a value", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun closeFragment() {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val bottomSheetFragment = fragmentManager.findFragmentByTag("AddItemFragment")
+        if (bottomSheetFragment is BottomSheetDialogFragment) {
+            bottomSheetFragment.dismiss()
+            fragmentManager.beginTransaction().remove(bottomSheetFragment).commitAllowingStateLoss()
+        }
+    }
+
+    private fun selectButton(buttons: List<Button>, selectedButton: Button, drawableId: Int) {
+
+        buttons.forEach { it.isSelected = false }
+        selectedButton.isSelected = true
+
+        name = selectedButton.text.toString()
+        keyboard.visibility=View.VISIBLE
+        iconId = drawableId;
     }
 }

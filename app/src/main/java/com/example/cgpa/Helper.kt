@@ -165,6 +165,11 @@ class Helper(private val context: Context) {
                 R.drawable.transportation_records -> "icon_6"
                 R.drawable.phone_records -> "icon_7"
                 R.drawable.other_records -> "icon_8"
+
+                R.drawable.other_records -> "icon_8"
+                R.drawable.other_records -> "icon_8"
+                R.drawable.other_records -> "icon_8"
+                R.drawable.other_records -> "icon_8"
                 // Add more cases as necessary
                 else -> "icon_${System.currentTimeMillis()}"
             }
