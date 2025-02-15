@@ -6,17 +6,21 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 
 class ExpenseTrackerMain : AppCompatActivity() {
 
     private lateinit var myFolder:File;
+    private val viewModel: SharedViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,9 @@ class ExpenseTrackerMain : AppCompatActivity() {
         if (!myFolder.exists()) {
             val success = myFolder.mkdirs()
         }
+
+        //load saved data
+        loadItemInfo();
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
@@ -63,5 +70,19 @@ class ExpenseTrackerMain : AppCompatActivity() {
     }
     private fun setNavBarColor(activity: Activity, colorResId: Int) {
             activity.window.navigationBarColor = ContextCompat.getColor(activity, colorResId)
+    }
+
+
+    private fun loadItemInfo()
+    {
+//        Helper.deleteAllSavedIcons(requireContext())
+//        Helper.saveItemInfoList(viewModel.userData,requireContext());
+        Log.i(Helper.TAG,"Loaded Saved ItemInfo")
+
+        val itemInfo = Helper.retrieveItemInfo(this);
+        for(item in itemInfo)
+        {
+            viewModel.setData(item);
+        }
     }
 }

@@ -159,43 +159,59 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="12dp"
-        android:gravity="bottom">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:gravity="bottom">-->
 
-    <EditText
-        android:id="@+id/note"
+<!--    <EditText-->
+<!--        android:id="@+id/note"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:layout_height="55dp"-->
+<!--        android:drawablePadding="12dp"-->
+<!--        android:background="@drawable/custom_input"-->
+<!--        android:drawableStart="@drawable/ic_note"-->
+<!--        android:ems="10"-->
+<!--        android:visibility="invisible"-->
+<!--        android:hint="Enter A Note..."-->
+<!--        android:inputType="text|textPersonName|textAutoComplete"-->
+<!--        android:paddingStart="12dp"-->
+<!--        android:paddingEnd="12dp"-->
+<!--        android:imeOptions="actionDone"/>-->
+<!--    <EditText-->
+<!--        android:id="@+id/value"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="55dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:drawablePadding="12dp"-->
+<!--        android:background="@drawable/custom_input"-->
+<!--        android:drawableStart="@drawable/custom_regno"-->
+<!--        android:ems="10"-->
+<!--        android:visibility="invisible"-->
+<!--        android:hint="Enter Value.."-->
+<!--        android:inputType="number"-->
+<!--        android:paddingStart="12dp"-->
+<!--        android:paddingEnd="12dp"-->
+<!--        android:imeOptions="actionDone"/>-->
+<!--    </LinearLayout>-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_gravity="bottom"
-        android:layout_height="55dp"
-        android:drawablePadding="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/ic_note"
-        android:ems="10"
-        android:visibility="invisible"
-        android:hint="Enter A Note..."
-        android:inputType="text|textPersonName|textAutoComplete"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:imeOptions="actionDone"/>
-    <EditText
-        android:id="@+id/value"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="24dp"
-        android:drawablePadding="12dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/custom_regno"
-        android:ems="10"
-        android:visibility="invisible"
-        android:hint="Enter Value.."
-        android:inputType="number"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:imeOptions="actionDone"/>
-    </LinearLayout>
+        android:layout_height="match_parent">
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/custom_keyboard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

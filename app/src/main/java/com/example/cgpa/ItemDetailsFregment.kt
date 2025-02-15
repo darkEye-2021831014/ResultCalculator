@@ -68,7 +68,7 @@ class ItemDetailsFregment : BottomSheetDialogFragment() {
                     confirm->
                     if(confirm)
                     {
-                        viewModel.removeData(item)
+                        Utility.deleteItem(item,viewModel,requireContext())
                         closeFragment()
                     }
                 }

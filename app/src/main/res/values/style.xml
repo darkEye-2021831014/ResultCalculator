@@ -14,4 +14,23 @@
         <!-- Optionally, make the status bar icons light -->
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+<!--    keyboard button -->
+    <style name="KeyboardButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/lessBlack</item>
+
+<!--        <item name="shapeAppearance">@style/SquareShape</item>-->
+    </style>
+
+    <!-- Define Square Shape -->
+    <style name="SquareShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">5dp</item>
+    </style>
+
+
 </resources>

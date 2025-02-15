@@ -30,15 +30,14 @@ import kotlin.math.abs
 
 class RecordsFragment : Fragment() {
 
-    private val viewModel by activityViewModels<SharedViewModel>()
+    private val viewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_records, container, false)
-        //load saved data
-        loadItemInfo();
+
 
         // Handle menu button click
         val menu: ImageButton = view.findViewById(R.id.menu)
@@ -130,27 +129,13 @@ class RecordsFragment : Fragment() {
     }
 
 
-
-    private fun loadItemInfo()
-    {
-//        Helper.deleteAllSavedIcons(requireContext())
-//        Helper.saveItemInfoList(viewModel.userData,requireContext());
-
-        val itemInfo = Helper.retrieveItemInfo(requireContext());
-        for(item in itemInfo)
-        {
-            viewModel.setData(item);
-        }
-    }
-
-
-    fun deleteItem(item:Item)
+    private fun deleteItem(item:Item)
     {
         val itemInfo = item.info
-        Helper.showConfirmationDialog(requireContext(), "Are you sure you want to delete?"){
-            confirm->
+        Helper.showConfirmationDialog(requireContext(),"Are you sure you want to delete?") {
+            confirm ->
             if(confirm)
-                viewModel.removeData(itemInfo)
+                Utility.deleteItem(itemInfo,viewModel,requireContext())
         }
     }
 

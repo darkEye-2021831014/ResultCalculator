@@ -1,9 +1,12 @@
 package com.example.cgpa
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +15,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -25,15 +31,25 @@ import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
 
+
+
+private const val prefix = "Note : ";
 class AddExpenseFragment : Fragment() {
 
-    private lateinit var note: EditText
-    private lateinit var value: EditText
+//    private lateinit var note: EditText
+//    private lateinit var value: EditText
     private val viewModel by activityViewModels<SharedViewModel>()
 
     private var name: String = "N/A"
     private var icon: Drawable? = null
     private var iconId:Int=R.drawable.other_records;
+    private lateinit var keyboard:LinearLayout;
+    private lateinit var inputField: TextView;
+    private lateinit var inputNote: EditText;
+    private lateinit var done:Button;
+
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -42,8 +58,13 @@ class AddExpenseFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_add_expense, container, false)
 
-        note = view.findViewById(R.id.note)
-        value = view.findViewById(R.id.value)
+//        note = view.findViewById(R.id.note)
+//        value = view.findViewById(R.id.value)
+        keyboard = view.findViewById(R.id.keyboard);
+        inputField = view.findViewById(R.id.inputField);
+        inputNote = view.findViewById(R.id.noteField);
+        keyboardOperation(view);
+
 
         val buttons = listOf(
             view.findViewById<Button>(R.id.food) to R.drawable.food_record,
@@ -60,23 +81,129 @@ class AddExpenseFragment : Fragment() {
             button.setOnClickListener { selectButton(buttons.map { it.first }, button, drawable) }
         }
 
-        value.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE ||
-                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
-                addExpense()
-                true
-            } else {
-                false
-            }
-        }
+//        value.setOnEditorActionListener { _, actionId, event ->
+//            if (actionId == EditorInfo.IME_ACTION_DONE ||
+//                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+//                addExpense()
+//                true
+//            } else {
+//                false
+//            }
+//        }
+
 
         return view
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun keyboardOperation(view:View) {
+        // Handle number clicks
+        val numberButtons = listOf(
+            R.id.btn_0 to "0",
+            R.id.btn_1 to "1",
+            R.id.btn_2 to "2",
+            R.id.btn_3 to "3",
+            R.id.btn_4 to "4",
+            R.id.btn_5 to "5",
+            R.id.btn_6 to "6",
+            R.id.btn_7 to "7",
+            R.id.btn_8 to "8",
+            R.id.btn_9 to "9"
+        )
+
+        for ((buttonId, value) in numberButtons) {
+            view.findViewById<Button>(buttonId).setOnClickListener { appendText(value) }
+        }
+
+        val delete:Button = view.findViewById(R.id.btn_del)
+        done = view.findViewById(R.id.btn_done)
+
+        val plus:Button = view.findViewById(R.id.plus)
+        val minus:Button = view.findViewById(R.id.minus)
+
+        delete.setOnClickListener {
+            if(inputField.text!="0")
+                inputField.text = inputField.text.toString().dropLast(1)
+            if(inputField.text.toString().isEmpty()) {
+                inputField.text = "0"
+                textColor(R.color.white, done);
+                backgroundTint(R.color.lessGray, done);
+            }
+            inputNote.clearFocus()
+        }
+
+        done.setOnClickListener {
+            if(inputField.text.toString()!="0")
+            {
+                addExpense();
+                closeFragment()
+            }
+        }
+
+    }
+
+//    fun noteChanges(){
+//
+//        // Set the initial prefix
+//        inputNote.setText(prefix)
+//        inputNote.setSelection(prefix.length) // Move cursor to the end of the prefix
+//
+//        // Add a TextWatcher to enforce the prefix
+//        inputNote.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                // Remove the listener to avoid infinite loops
+//
+//                // Remove the listener to avoid infinite loops
+//                inputNote.removeTextChangedListener(this)
+//
+//                // Re-add the prefix only if it's missing or partially deleted
+//                var newText = prefix + s.toString().replace(prefix, "")
+//                if(inputNote.text.toString().length<= prefix.length)
+//                    newText=prefix;
+//
+//                inputNote.setText(newText)
+//                inputNote.setSelection(newText.length) // Move cursor to the end
+//
+//
+//                // Re-add the listener
+//                inputNote.addTextChangedListener(this)
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {}
+//        })
+//    }
+
+    fun textColor(color:Int,button:Button)
+    {
+        button.setTextColor(ContextCompat.getColor(requireContext(), color))
+    }
+    fun backgroundTint(color:Int,button:Button)
+    {
+        val colorStateList =
+            ColorStateList.valueOf(ContextCompat.getColor(requireContext(), color))
+        button.backgroundTintList = colorStateList
+    }
+
+
+    private fun appendText(value: String) {
+        if(inputField.text.toString()=="0")
+            inputField.text = value
+        else {
+            inputField.text = inputField.text.toString() + value
+        }
+        if(inputField.text.toString()!="0" && !inputField.text.toString().contains("+")) {
+            textColor(R.color.black, done);
+            backgroundTint(R.color.yellow, done);
+        }
+        inputNote.clearFocus();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun addExpense() {
-        val enteredText = value.text.toString().trim()
-        val enteredNote = note.text.toString().trim()
+        val enteredText = inputField.text.toString().trim()
+        val enteredNote = inputNote.text.toString().trim()
         var note:String? = null
 
         if (enteredNote.isNotEmpty()) note = enteredNote;
@@ -95,6 +222,7 @@ class AddExpenseFragment : Fragment() {
             viewModel.setData(item)
             val dateExchange = "${item.year}-${item.month}-${item.date}"
             viewModel.updateExchange(dateExchange,abs(cash),true)
+            //save item info in file
             Helper.saveItemInfoList(viewModel.userData,requireContext())
 
             closeFragment()
@@ -113,14 +241,15 @@ class AddExpenseFragment : Fragment() {
     }
 
     private fun selectButton(buttons: List<Button>, selectedButton: Button, drawableId: Int) {
-        note.visibility = View.VISIBLE
-        value.visibility = View.VISIBLE
-        showKeyboard(value)
+//        note.visibility = View.VISIBLE
+//        value.visibility = View.VISIBLE
+//        showKeyboard(value)
 
         buttons.forEach { it.isSelected = false }
         selectedButton.isSelected = true
 
         name = selectedButton.text.toString()
+        keyboard.visibility=View.VISIBLE
 //        icon = Helper.getIcon(requireContext(), drawable)
         iconId = drawableId;
     }
