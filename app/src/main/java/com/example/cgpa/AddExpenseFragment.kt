@@ -1,5 +1,6 @@
 package com.example.cgpa
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -108,6 +109,8 @@ class AddExpenseFragment : Fragment() {
         val plus:Button = view.findViewById(R.id.plus)
         val minus:Button = view.findViewById(R.id.minus)
 
+        val date:Button = view.findViewById(R.id.date)
+
         delete.setOnClickListener {
             if(inputField.text!="0") {
                 if(inputField.text.toString().last()==' ') {
@@ -165,6 +168,39 @@ class AddExpenseFragment : Fragment() {
                 backgroundTint(R.color.yellow, done);
                 done.text = "="
             }
+        }
+
+
+        date.setOnClickListener {
+            // Get the current date
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            // Show DatePickerDialog
+            val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay)
+                }
+
+                // Display selected date in TextView
+                val isToday = selectedCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+                    selectedCalendar.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
+                if(!isToday) {
+                    val monthName = SimpleDateFormat("MMM", Locale.getDefault()).format(selectedCalendar.time)
+                    date.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                    date.text = "$monthName $selectedDay\n$selectedYear"
+                }
+                else
+                {
+                    date.setCompoundDrawablesWithIntrinsicBounds(
+                        Helper.getIcon(requireContext(),R.drawable.ic_calendar), null, null, null)
+                    date.text = "Today"
+                }
+            }, year, month, day)
+
+            datePickerDialog.show()
         }
     }
 

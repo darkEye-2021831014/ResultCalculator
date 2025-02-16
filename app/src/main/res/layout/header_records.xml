@@ -45,7 +45,7 @@
             android:id="@+id/calender"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_calendar"
+            android:src="@drawable/ic_calender_records"
             android:backgroundTint="@color/lessBlack"
             android:contentDescription="calender"
             />
