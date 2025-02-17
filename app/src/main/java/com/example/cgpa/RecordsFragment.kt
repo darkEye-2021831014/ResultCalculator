@@ -1,6 +1,7 @@
 package com.example.cgpa
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -29,8 +30,11 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.abs
 
 class RecordsFragment : Fragment() {
@@ -41,6 +45,12 @@ class RecordsFragment : Fragment() {
     private lateinit var expenseText:TextView
     private lateinit var balanceText:TextView
 
+    private lateinit var currentYear:TextView
+    private lateinit var currentMonth:Button
+
+    private lateinit var recyclerView:RecyclerView
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +58,8 @@ class RecordsFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_records, container, false)
 
-        val currentYear:TextView = view.findViewById(R.id.currentYear)
-        val currentMonth:Button = view.findViewById(R.id.monthSelector)
+        currentYear = view.findViewById(R.id.currentYear)
+        currentMonth = view.findViewById(R.id.monthSelector)
 
         incomeText = view.findViewById(R.id.incomeTextValue)
         expenseText = view.findViewById(R.id.expenseTextValue)
@@ -58,6 +68,33 @@ class RecordsFragment : Fragment() {
 
         currentYear.text = LocalDate.now().year.toString()
         currentMonth.text = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM"))
+
+        currentMonth.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+
+            // Create the DatePickerDialog with default day set to 1 (first day of the month)
+            val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, _ ->
+                // Here, we ensure the first day is selected every time the user switches months
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, 1)  // Force the day to 1, no matter the previous selection
+                }
+
+                // Update the UI
+                currentMonth.text = SimpleDateFormat("MMM", Locale.getDefault()).format(selectedCalendar.time)
+                currentYear.text = selectedYear.toString()
+
+                // Trigger UI update based on the new selected month
+                viewModel.userData.value?.let { updateUI(it) }
+
+            }, year, month, 1) // Default day is set to 1 initially
+
+            // Show the dialog
+            datePickerDialog.show()
+        }
+
+
 
         // Handle menu button click
         val menu: ImageButton = view.findViewById(R.id.menu)
@@ -82,36 +119,40 @@ class RecordsFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView(view: View) {
-        val recyclerView: RecyclerView = view.findViewById(R.id.recordContainer)
+        recyclerView = view.findViewById(R.id.recordContainer)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.userData.observe(viewLifecycleOwner) { data ->
-            var expense:Long=0
-            var income:Long=0
-            val month = LocalDate.now().monthValue;
-            for(itemInfo in data)
-            {
-                if(itemInfo.month == month)
-                {
-                    if(itemInfo.isExpense)expense+=abs(itemInfo.amount)
-                    else income += abs(itemInfo.amount);
-                }
-            }
-
-            incomeText.text = income.toString()
-            expenseText.text = expense.toString()
-            balanceText.text = (income-expense).toString()
-
-
-            val items = processUserData(data)
-
-            recyclerView.adapter = ItemAdapter(
-                items,
-                onEditClick = { item -> showToast("Editing: $item") },
-                onDeleteClick = { item -> deleteItem(item as Item) },
-                onDetailsClick = { item -> itemDetails(item as Item) }
-            )
+            updateUI(data)
         }
+    }
+
+    private fun updateUI(data:MutableList<ItemInfo>)
+    {
+        var expense:Long=0
+        var income:Long=0
+        for(itemInfo in data)
+        {
+            if(itemInfo.monthName == currentMonth.text && itemInfo.year == currentYear.text.toString().toInt())
+            {
+                if(itemInfo.isExpense)expense+=abs(itemInfo.amount)
+                else income += abs(itemInfo.amount);
+            }
+        }
+
+        incomeText.text = income.toString()
+        expenseText.text = expense.toString()
+        balanceText.text = (income-expense).toString()
+
+
+        val items = processUserData(data)
+
+        recyclerView.adapter = ItemAdapter(
+            items,
+            onEditClick = { item -> showToast("Editing: $item") },
+            onDeleteClick = { item -> deleteItem(item as Item) },
+            onDetailsClick = { item -> itemDetails(item as Item) }
+        )
     }
 
 
@@ -124,6 +165,9 @@ class RecordsFragment : Fragment() {
         var dateText = ""
 
         for (item in data) {
+            if(item.monthName != currentMonth.text || item.year != currentYear.text.toString().toInt())
+                continue
+            //show only current months data
             if (item.date != date) {
                 if (date != -1) {
                     addDateHeader(items, dateText, expense, income)

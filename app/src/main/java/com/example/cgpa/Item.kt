@@ -16,15 +16,15 @@ data class Date(
 
 data class ItemInfo(
     var name:String,
-    val icon:String?,
-    val amount:Long,
-    val isExpense:Boolean,
-    val date:Int,
-    val month:Int,
-    val year: Int,
-    val monthName:String,
-    val dateName:String,
-    val note:String?,
+    var icon:String?,
+    var amount:Long,
+    var isExpense:Boolean,
+    var date:Int,
+    var month:Int,
+    var year: Int,
+    var monthName:String,
+    var dateName:String,
+    var note:String?,
 )
 
 data class DailyExchange(

@@ -1,5 +1,6 @@
 package com.example.cgpa
 
+import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
@@ -51,6 +52,9 @@ class AddIncomeFragment : Fragment() {
     private var prevValue:String = ""
     private var curValue:String = "0"
 
+    private lateinit var itemInfo: ItemInfo;
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +77,17 @@ class AddIncomeFragment : Fragment() {
         inputField = view.findViewById(R.id.inputField);
         inputNote = view.findViewById(R.id.noteField);
         keyboardOperation(view);
+
+
+        //current date
+        val calender = Calendar.getInstance()
+        val date = calender.get(Calendar.DAY_OF_MONTH)
+        val month = calender.get(Calendar.MONTH) + 1;
+        val monthName = SimpleDateFormat("MMM", Locale.getDefault()).format(calender.time)
+        val dateName = SimpleDateFormat("EEEE", Locale.getDefault()).format(calender.time)
+        val year = calender.get(Calendar.YEAR)
+
+        itemInfo = ItemInfo(name,"",0,true,date,month,year,monthName,dateName,null)
 
 
 
@@ -138,6 +153,9 @@ class AddIncomeFragment : Fragment() {
         val plus:Button = view.findViewById(R.id.plus)
         val minus:Button = view.findViewById(R.id.minus)
 
+        val date:Button = view.findViewById(R.id.date)
+
+
         delete.setOnClickListener {
             if(inputField.text!="0") {
                 if(inputField.text.toString().last()==' ') {
@@ -197,6 +215,54 @@ class AddIncomeFragment : Fragment() {
             }
         }
 
+
+        date.setOnClickListener {
+            // Get the current date
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            // Show DatePickerDialog
+            val datePickerDialog =
+                DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                    val selectedCalendar = Calendar.getInstance().apply {
+                        set(selectedYear, selectedMonth, selectedDay)
+                    }
+
+                    itemInfo.date = selectedCalendar.get(Calendar.DAY_OF_MONTH)
+                    itemInfo.month = selectedCalendar.get(Calendar.MONTH) + 1;
+                    itemInfo.monthName =
+                        SimpleDateFormat("MMM", Locale.getDefault()).format(selectedCalendar.time)
+                    itemInfo.dateName =
+                        SimpleDateFormat("EEEE", Locale.getDefault()).format(selectedCalendar.time)
+                    itemInfo.year = selectedCalendar.get(Calendar.YEAR)
+
+                    // Display selected date in TextView
+                    val isToday =
+                        selectedCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+                            selectedCalendar.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
+                    if (!isToday) {
+                        val monthName = SimpleDateFormat(
+                            "MMM",
+                            Locale.getDefault()
+                        ).format(selectedCalendar.time)
+                        date.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+                        date.text = "$monthName $selectedDay\n$selectedYear"
+                    } else {
+                        date.setCompoundDrawablesWithIntrinsicBounds(
+                            Helper.getIcon(requireContext(), R.drawable.ic_calendar),
+                            null,
+                            null,
+                            null
+                        )
+                        date.text = "Today"
+                    }
+                }, year, month, day)
+
+            datePickerDialog.show()
+        }
+
     }
 
 
@@ -235,16 +301,15 @@ class AddIncomeFragment : Fragment() {
         if (enteredNote.isNotEmpty()) note = enteredNote;
 
         if (enteredText.isNotEmpty()) {
-            val cash = enteredText.toLong()
+            val amount = enteredText.toLong()
 
-            val calendar = Calendar.getInstance()
-            val date = calendar.get(Calendar.DAY_OF_MONTH)
-            val month = LocalDate.now().monthValue
-            val monthName = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM"))
-            val dateName = SimpleDateFormat("EEEE", Locale.getDefault()).format(calendar.time)
-            val year = Year.now().value
+            itemInfo.name = name;
+            itemInfo.icon = Helper.saveIcon(iconId,requireContext())
+            itemInfo.amount = amount
+            itemInfo.isExpense = false
+            itemInfo.note = note;
 
-            val item = ItemInfo(name, Helper.saveIcon(iconId,requireContext()), cash, false, date, month, year, monthName, dateName,note)
+            val item = itemInfo;
             viewModel.setData(item)
 
             //save item info in file

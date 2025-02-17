@@ -81,9 +81,12 @@ class ExpenseTrackerMain : AppCompatActivity() {
 //        Helper.saveItemInfoList(viewModel.userData,requireContext());
         Log.i(Helper.TAG,"Loaded Saved ItemInfo")
 
+
+
         val itemInfo = Helper.retrieveItemInfo(this);
         for(item in itemInfo)
         {
+//            if(item.month==month && item.year==year) //get the data of current month
             viewModel.setData(item);
         }
     }
