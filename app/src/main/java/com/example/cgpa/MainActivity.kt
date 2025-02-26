@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -99,6 +100,14 @@ class MainActivity : AppCompatActivity() {
         val clearSavedData:Button = findViewById(R.id.clearSaved);
         clearSavedData.setOnClickListener {
             confirmDialog();
+        }
+
+
+        //menu action
+        findViewById<ImageButton>(R.id.menu).setOnClickListener {
+            val intent = Intent(this, ExpenseTrackerMain::class.java);
+            startActivity(intent);
+            finish();
         }
     }
 

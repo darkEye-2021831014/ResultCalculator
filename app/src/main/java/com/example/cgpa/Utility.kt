@@ -1,7 +1,9 @@
 package com.example.cgpa
 
 import android.content.Context
+import java.text.NumberFormat
 import java.util.Calendar
+import java.util.Locale
 
 class Utility {
     companion object {
@@ -18,6 +20,10 @@ class Utility {
             return Calendar.getInstance().get(Calendar.YEAR)
         }
 
+        fun formatedValue(value:Long):String {
+//            return String.format("%,d", value)
+            return NumberFormat.getNumberInstance(Locale.US).format(value)
+        }
 
 
     }

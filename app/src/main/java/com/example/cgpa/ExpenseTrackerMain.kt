@@ -1,7 +1,6 @@
 package com.example.cgpa
 
 import android.app.Activity
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -12,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 
@@ -46,8 +44,8 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
-        val searchButton = findViewById<Button>(R.id.Charts)
-        val profileButton = findViewById<Button>(R.id.budget)
+        val chartsButton = findViewById<Button>(R.id.Charts)
+        val budgetButton = findViewById<Button>(R.id.budget)
 
         val addItemButton = findViewById<FloatingActionButton>(R.id.addItem)
         addItemButton.setOnClickListener {
@@ -56,6 +54,7 @@ class ExpenseTrackerMain : AppCompatActivity() {
         }
 
         homeButton.setOnClickListener { replaceFragment(RecordsFragment()) }
+        chartsButton.setOnClickListener { replaceFragment(ChartFragment()) }
 //        searchButton.setOnClickListener { replaceFragment(SearchFragment()) }
 //        profileButton.setOnClickListener { replaceFragment(ProfileFragment()) }
 

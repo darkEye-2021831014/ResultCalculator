@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
 fragmentKtx = "1.8.6"
+gradle = "7.0.4"
 gson = "2.10.1"
 itext7Core = "7.2.3"
 kotlin = "1.9.0"
@@ -14,6 +15,7 @@ material = "1.12.0"
 activity = "1.9.0"
 constraintlayout = "2.2.0"
 materialVersion = "1.9.0"
+mpandroidchart = "v3.1.0"
 pdfbox = "2.0.29"
 pdfboxAndroid = "1.8.10.0"
 pdfboxAndroidVersion = "2.0.27.0"
@@ -22,6 +24,7 @@ pdfboxAndroidVersion = "2.0.27.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 itext7-core = { module = "com.itextpdf:itext7-core", version.ref = "itext7Core" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -32,6 +35,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
+mpandroidchart = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "mpandroidchart" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
 pdfbox-android = { module = "org.apache.pdfbox:pdfbox-android", version.ref = "pdfboxAndroid" }
 tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "pdfboxAndroidVersion" }

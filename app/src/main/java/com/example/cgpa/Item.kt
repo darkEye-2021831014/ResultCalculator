@@ -32,3 +32,8 @@ data class DailyExchange(
     var expense:Long,
     var income:Long,
 )
+
+data class ChartInfo(
+    val chart:Format,
+    val isExpense:Boolean,
+)

@@ -8,6 +8,7 @@ class SharedViewModel : ViewModel() {
     val userData = MutableLiveData<MutableList<ItemInfo>>(mutableListOf())
     val dailyExchange = MutableLiveData<MutableList<DailyExchange>>(mutableListOf())
     val selectedItem = MutableLiveData<ItemInfo>()
+    val selectedChart = MutableLiveData<ChartInfo>()
 
     // Add data to the respective list
     fun setData(data: Any) {

@@ -13,5 +13,9 @@ enum class Format {
     GRADE,
     MARKS,
     CG,
-    CREDIT
+    CREDIT,
+    THIS_MONTH,
+    LAST_MONTH,
+    THIS_YEAR,
+    LAST_YEAR
 }

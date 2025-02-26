@@ -7,26 +7,63 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/black"
+        android:background="@android:color/transparent"
+        android:contentDescription="MenuButton"
+        android:src="@drawable/ic_menu"
+        app:layout_constraintBottom_toTopOf="@id/name"
+        app:layout_constraintEnd_toStartOf="@id/LabelText"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1" />
     <TextView
         android:id="@+id/LabelText"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
-        android:maxLines="2"
+        android:layout_weight="1"
         android:text="Student Information"
-        android:textSize="16sp"
+        android:textColor="@color/white"
         android:textStyle="bold"
-        app:autoSizeMaxTextSize="24sp"
-        app:autoSizeMinTextSize="12sp"
+        android:gravity="center"
+        android:layout_marginEnd="18dp"
+        app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="8sp"
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintVertical_weight="1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintTop_toTopOf="@id/menu"
+        app:layout_constraintBottom_toBottomOf="@id/menu"
+        app:layout_constraintStart_toEndOf="@id/menu"
+        />
+
+<!--    <TextView-->
+<!--        android:id="@+id/LabelText"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:layout_marginEnd="24dp"-->
+<!--        android:maxLines="2"-->
+<!--        android:text="Student Information"-->
+<!--        android:textSize="16sp"-->
+<!--        android:textStyle="bold"-->
+<!--        app:autoSizeMaxTextSize="24sp"-->
+<!--        app:autoSizeMinTextSize="12sp"-->
+<!--        app:autoSizeStepGranularity="2sp"-->
+<!--        app:autoSizeTextType="uniform"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/name"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_weight="1" />-->
 
     <EditText
         android:id="@+id/name"
@@ -41,8 +78,8 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         app:layout_constraintBottom_toTopOf="@+id/regNo"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
-        app:layout_constraintTop_toBottomOf="@+id/LabelText"
+        app:layout_constraintStart_toStartOf="@+id/menu"
+        app:layout_constraintTop_toBottomOf="@+id/menu"
         app:layout_constraintVertical_weight="1.2" />
 
     <EditText
@@ -130,9 +167,10 @@
         app:autoSizeMinTextSize="12sp"
         app:autoSizeStepGranularity="2sp"
         app:autoSizeTextType="uniform"
+        android:layout_marginEnd="12dp"
         app:layout_constraintBottom_toTopOf="@+id/grade"
-        app:layout_constraintEnd_toEndOf="@+id/LabelText"
-        app:layout_constraintStart_toStartOf="@+id/LabelText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/regNo"
         app:layout_constraintTop_toBottomOf="@+id/regNo"
         app:layout_constraintVertical_weight="0.85" />
 
