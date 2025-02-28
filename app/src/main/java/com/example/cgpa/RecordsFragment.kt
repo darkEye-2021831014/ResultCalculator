@@ -112,6 +112,7 @@ class RecordsFragment : Fragment() {
             requireActivity().finishAffinity()
         }
 
+        //list of items
         setupRecyclerView(view)
 
         return view
@@ -149,6 +150,7 @@ class RecordsFragment : Fragment() {
 
         recyclerView.adapter = ItemAdapter(
             items,
+            true,
             onEditClick = { item -> showToast("Editing: $item") },
             onDeleteClick = { item -> deleteItem(item as Item) },
             onDetailsClick = { item -> itemDetails(item as Item) }

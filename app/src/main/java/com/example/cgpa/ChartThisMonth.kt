@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -40,6 +43,12 @@ class ChartThisMonth : Fragment() {
     private var isMonth:Boolean = false;
     private lateinit var pieChart:PieChart
 
+    private lateinit var recyclerView: RecyclerView
+
+    private val itemValue: MutableMap<String, Long> = mutableMapOf()
+    private val itemIcon: MutableMap<String, String?> = mutableMapOf()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +66,65 @@ class ChartThisMonth : Fragment() {
         val view = inflater.inflate(R.layout.fragment_chart_this_month, container, false)
 
         pieChart = view.findViewById(R.id.pieChart)
+
+
+
+
+
+        Log.i(Helper.TAG,"${viewModel.selectedChart.value}")
+        viewModel.userData.observe(viewLifecycleOwner){
+            data->
+            updateChart(data)
+        }
+
+        //list of items
+        setupRecyclerView(view)
+
+        return view;
+    }
+
+    private fun setupRecyclerView(view: View) {
+        recyclerView = view.findViewById(R.id.pieChartDetails)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+
+
+
+    private fun updateUI()
+    {
+        val sortedItems = itemValue.entries.sortedByDescending { it.value };
+        val sum = itemValue.entries.sumOf { it.value }
+
+        val items:MutableList<Any> = mutableListOf()
+        for((itemName,value) in sortedItems)
+        {
+            val percentage = (abs(value) * 100.0 / sum)
+            val formated = String.format("%.2f",percentage);
+            items.add(Item("$itemName   ${formated}%",Helper.loadIcon(itemIcon[itemName],requireContext()),value.toString(),
+                ItemInfo("","",0L,false,0,0,0,"","","")))
+        }
+
+        recyclerView.adapter = ItemAdapter(
+            items,
+            false,
+            onEditClick = {},
+            onDeleteClick = {},
+            onDetailsClick = {}
+        )
+    }
+
+
+
+
+
+    fun primaryData(){
         val calendar = Calendar.getInstance()
         val curYear =  calendar.get(Calendar.YEAR);
         val curMonth = calendar.get(Calendar.MONTH) + 1;
         currentMonth = curMonth
         currentYear = curYear
-
         currentMode = viewModel.selectedChart.value?.isExpense?:true
-        Log.i(Helper.TAG,"${viewModel.selectedChart.value}")
 
         when(viewModel.selectedChart.value?.chart)
         {
@@ -81,27 +141,16 @@ class ChartThisMonth : Fragment() {
             Format.LAST_YEAR -> currentYear=curYear-1;
             else -> {}
         }
-
-
-
-        viewModel.userData.observe(viewLifecycleOwner){
-            data->
-            updateChart(data)
-        }
-
-
-        return view;
     }
 
 
 
 
     fun updateChart(items: MutableList<ItemInfo>) {
-        Log.i(Helper.TAG,"called: $currentYear $currentMonth expense: $currentMode month: $isMonth")
+        primaryData();
         if (items.isEmpty()) return  // Prevent empty data issues
 
         val pieEntries: MutableList<PieEntry> = mutableListOf()
-        val itemValue: MutableMap<String, Long> = mutableMapOf()
         var maxWidth = 0
         var total = 0L
 
@@ -119,6 +168,7 @@ class ChartThisMonth : Fragment() {
                     }
                 }
             }
+            itemIcon[itemInfo.name] = itemInfo.icon;
         }
 
         // Sort the map by value in descending order and take the top 4 items
@@ -204,6 +254,9 @@ class ChartThisMonth : Fragment() {
 
         // Refresh the chart
         pieChart.invalidate()
+
+        //update the list items
+        updateUI()
     }
 
 

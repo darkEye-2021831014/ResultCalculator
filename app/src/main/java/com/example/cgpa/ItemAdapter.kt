@@ -3,6 +3,7 @@ package com.example.cgpa
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ItemAdapter(
     private val itemList: MutableList<Any>,
+    private val isClickable: Boolean,
     private val onEditClick: (Any) -> Unit,
     private val onDeleteClick: (Any) -> Unit,
     private val onDetailsClick: (Any) -> Unit
@@ -53,13 +55,15 @@ class ItemAdapter(
             setDrawableStart(holder, item.icon)
 
             // Long press to show options
-            holder.itemView.setOnLongClickListener {
-                showOptionsDialog(holder.itemView.context, item)
-                true // Return true to consume the event
-            }
+            if(isClickable) {
+                holder.itemView.setOnLongClickListener {
+                    showOptionsDialog(holder.itemView.context, item)
+                    true // Return true to consume the event
+                }
 
-            holder.itemView.setOnClickListener{
-                onDetailsClick(item)
+                holder.itemView.setOnClickListener {
+                    onDetailsClick(item)
+                }
             }
         }
         else if(item is Date) // this is a date

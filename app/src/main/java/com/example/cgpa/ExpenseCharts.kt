@@ -86,6 +86,20 @@ class ExpenseCharts : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 updateButtonStates(position)
+
+                when(position){
+                    0-> viewModel.selectedChart.value = ChartInfo(Format.THIS_MONTH,
+                            viewModel.selectedChart.value?.isExpense?:true)
+
+                    1 -> viewModel.selectedChart.value = ChartInfo(Format.LAST_MONTH,
+                        viewModel.selectedChart.value?.isExpense?:true)
+
+                    2 -> viewModel.selectedChart.value = ChartInfo(Format.THIS_YEAR,
+                        viewModel.selectedChart.value?.isExpense?:true)
+
+                    3 -> viewModel.selectedChart.value = ChartInfo(Format.LAST_YEAR,
+                        viewModel.selectedChart.value?.isExpense?:true)
+                }
             }
         })
 
@@ -107,19 +121,23 @@ class ExpenseCharts : Fragment() {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> {
-                    viewModel.selectedChart.value = ChartInfo(Format.THIS_MONTH,viewModel.selectedChart.value?.isExpense?:true)
+                    viewModel.selectedChart.value = ChartInfo(Format.THIS_MONTH,
+                        viewModel.selectedChart.value?.isExpense?:true)
                     ChartThisMonth()
                 }
                 1 -> {
-                    viewModel.selectedChart.value = ChartInfo(Format.LAST_MONTH,viewModel.selectedChart.value?.isExpense?:true)
+                    viewModel.selectedChart.value = ChartInfo(Format.LAST_MONTH,
+                        viewModel.selectedChart.value?.isExpense?:true)
                     ChartThisMonth()
                 }
                 2 -> {
-                    viewModel.selectedChart.value = ChartInfo(Format.THIS_YEAR,viewModel.selectedChart.value?.isExpense?:true)
+                    viewModel.selectedChart.value = ChartInfo(Format.THIS_YEAR,
+                        viewModel.selectedChart.value?.isExpense?:true)
                     ChartThisMonth()
                 }
                 3 -> {
-                    viewModel.selectedChart.value = ChartInfo(Format.LAST_YEAR,viewModel.selectedChart.value?.isExpense?:true)
+                    viewModel.selectedChart.value = ChartInfo(Format.LAST_YEAR,
+                        viewModel.selectedChart.value?.isExpense?:true)
                     ChartThisMonth()
                 }
                 else -> throw IllegalArgumentException("Invalid position")

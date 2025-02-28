@@ -59,6 +59,8 @@ class ChartFragment : Fragment() {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_chart, container, false)
 
+        viewModel.selectedChart.value = ChartInfo(Format.THIS_MONTH,true)
+
 
         //sliding income expense
         viewPager = view.findViewById(R.id.viewPager)
@@ -89,6 +91,20 @@ class ChartFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 updateButtonStates(position)
+
+                // Log every time the user switches pages
+                when (position) {
+                    0 -> {
+                        Utility.log("Expense")
+                        val chart = ChartInfo(Format.THIS_MONTH,true)
+                        viewModel.selectedChart.value = chart
+                    }
+                    1 -> {
+                        Utility.log("Income")
+                        val chart = ChartInfo(Format.THIS_MONTH,false)
+                        viewModel.selectedChart.value = chart
+                    }
+                }
             }
         })
 
