@@ -64,7 +64,8 @@ object Converter {
         return convertMarks[varify]!!
     }
 
-    fun cgToLatter(cg: Double): String? {
+    fun cgToLatter(cgpa: Double): String? {
+        val cg = Utility.formatDouble(cgpa)
         var varify = ((cg * 100) % 100).toInt()
         var cur = StringBuilder()
         cur.append((cg.toInt()) % 10).append(".")

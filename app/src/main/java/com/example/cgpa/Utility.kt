@@ -22,9 +22,15 @@ class Utility {
             return Calendar.getInstance().get(Calendar.YEAR)
         }
 
+        //comma separated value
         fun formatedValue(value:Long):String {
 //            return String.format("%,d", value)
             return NumberFormat.getNumberInstance(Locale.US).format(value)
+        }
+
+        // double to 2 decimal digit
+        fun formatDouble(value:Double):Double {
+            return Math.round(value * 100)/100.0
         }
 
         fun showToast(context:Context,message: String) {
