@@ -1,11 +1,20 @@
 package com.example.cgpa
 
+import android.app.Activity
 import android.content.Context
+import android.graphics.Paint
 import android.util.Log
+import android.widget.NumberPicker
+import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 
 class Utility {
     companion object {
@@ -41,6 +50,13 @@ class Utility {
         {
             Log.i(Helper.TAG,message);
         }
+
+        fun bottomSheet(activity:FragmentActivity, bottomSheet: BottomSheetDialogFragment, name:String)
+        {
+            bottomSheet.show(activity.supportFragmentManager, name)
+        }
+
+
 
     }
 }

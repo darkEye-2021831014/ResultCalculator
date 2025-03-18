@@ -31,6 +31,26 @@
         android:background="?android:attr/listDivider" />
 
     <Button
+        android:id="@+id/generateReport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_marginStart="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:text="GENERATE REPORT"
+        android:textColor="@color/orange"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.001dp"
+        android:layout_marginTop="10dp"
+        android:background="?android:attr/listDivider" />
+
+    <Button
         android:id="@+id/resultCalculator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +67,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.001dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:background="?android:attr/listDivider" />
 
     <Button
@@ -59,7 +79,7 @@
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:layout_marginEnd="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="10dp"
         android:textStyle="bold"
         android:text="EXIT"
         android:textColor="@color/red"/>

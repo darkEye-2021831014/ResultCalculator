@@ -101,6 +101,11 @@ class RecordsFragment : Fragment() {
         val drawer: DrawerLayout = view.findViewById(R.id.drawer_Layout_Records)
         menu.setOnClickListener { drawer.openDrawer(GravityCompat.START) }
 
+        // Navigate to report generator
+        view.findViewById<Button>(R.id.generateReport).setOnClickListener {
+            Utility.bottomSheet(requireActivity(),GenerateReport(),"GenerateReport")
+        }
+
         // Navigate to Result Calculator
         view.findViewById<Button>(R.id.resultCalculator).setOnClickListener {
             startActivity(Intent(requireContext(), MainActivity::class.java))
