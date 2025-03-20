@@ -31,21 +31,32 @@ import com.itextpdf.layout.properties.UnitValue
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.text.Normalizer.Form
+
+import android.os.Environment
+import com.itextpdf.layout.borders.SolidBorder
+import com.itextpdf.layout.element.AreaBreak
+
 
 private const val TAG="MainActivity"
 class PdfManager(private val context:Context) {
 
-    companion object{
-        fun createPdfFile(context:Context,myFolder:File,fileContent:String,identifier:Char,column:Int) {
+    companion object {
+        fun createPdfFile(
+            context: Context,
+            myFolder: File,
+            fileContent: String,
+            identifier: Char,
+            column: Int
+        ) {
             // Define the file path for the PDF
-            val file = File(myFolder,Helper.PDF_FILE)
+            val file = File(myFolder, Helper.PDF_FILE)
             val outputStream = FileOutputStream(file)
 
             // Initialize PDF writer and document
             val writer = PdfWriter(outputStream)
             val pdfDocument = PdfDocument(writer)
             val document = Document(pdfDocument)
-
 
 
             // Create a caption for the table
@@ -56,11 +67,12 @@ class PdfManager(private val context:Context) {
                 .setTextAlignment(TextAlignment.CENTER)
             document.add(caption)
 
-            caption = Paragraph("This Pdf File Was Automatically Generated\nBased On The Input Files Provided By The User\n\n")
-                .setFontSize(18f)
-                .setFontColor(DeviceRgb(75, 0, 130))
-                .setBold()
-                .setTextAlignment(TextAlignment.CENTER)
+            caption =
+                Paragraph("This Pdf File Was Automatically Generated\nBased On The Input Files Provided By The User\n\n")
+                    .setFontSize(18f)
+                    .setFontColor(DeviceRgb(75, 0, 130))
+                    .setBold()
+                    .setTextAlignment(TextAlignment.CENTER)
             document.add(caption)
 
 
@@ -76,18 +88,20 @@ class PdfManager(private val context:Context) {
 
             // Add header cells
             var header = true;
-            for (line in lines)
-            {
-                if(line.isEmpty() || line.isBlank())break;
+            for (line in lines) {
+                if (line.isEmpty() || line.isBlank()) break;
 //                Log.i(Helper.TAG,"New Line: $line")
                 val elements = line.split(identifier)
-                for(element in elements) {
-                    if(header)
+                for (element in elements) {
+                    if (header)
                         table.addCell(
-                            Cell().add(Paragraph(element)).setBold().setTextAlignment(TextAlignment.CENTER))
+                            Cell().add(Paragraph(element)).setBold()
+                                .setTextAlignment(TextAlignment.CENTER)
+                        )
                     else
                         table.addCell(
-                            Cell().add(Paragraph(element)).setTextAlignment(TextAlignment.CENTER))
+                            Cell().add(Paragraph(element)).setTextAlignment(TextAlignment.CENTER)
+                        )
                 }
                 header = false;
             }
@@ -95,10 +109,11 @@ class PdfManager(private val context:Context) {
             // Add the table to the document
             document.add(table)
 
-            caption = Paragraph("N.B: Star(*) After Total Credit Means Drop In One or More Courses.")
-                .setFontSize(14f)
-                .setBold()
-                .setTextAlignment(TextAlignment.LEFT)
+            caption =
+                Paragraph("N.B: Star(*) After Total Credit Means Drop In One or More Courses.")
+                    .setFontSize(14f)
+                    .setBold()
+                    .setTextAlignment(TextAlignment.LEFT)
 
             // Add the caption to the document
             document.add(caption)
@@ -121,14 +136,206 @@ class PdfManager(private val context:Context) {
             document.close()
 
             // Notify the user that the PDF has been created
-            Log.i(TAG,"PDF created at: ${file.absolutePath}")
+            Log.i(TAG, "PDF created at: ${file.absolutePath}")
             //instantly provide option to open the pdf file
-            openPdfFile(context,file.absolutePath)
+            openPdfFile(context, file.absolutePath)
         }
 
 
+        fun createReportPdf(
+            context: Context,
+            file: File,
+            expenseData: List<reportItem>,
+            expenseFullData: List<reportNote>,
+            reportType: Format,
+            date: CalenderDate,
+            incomeData: List<reportItem>,
+            incomeFullData: List<reportNote>
+        ) {
+            val outputStream = FileOutputStream(file)
+            val writer = PdfWriter(outputStream)
+            val pdfDocument = PdfDocument(writer)
+            val document = Document(pdfDocument)
+
+            if (expenseData.isNotEmpty()) {
+                createReport(expenseData,expenseFullData,reportType,date,document,"EXPENSE")
+            }
+            if(incomeData.isNotEmpty())
+                createReport(incomeData,incomeFullData,reportType,date,document,"INCOME")
+
+        document.close()
+
+
+        openPdfFile(context,file.absolutePath.toString())
+    }
+
+        private var times=0;
+
+    private fun createReport(expenseData: List<reportItem>, expenseFullData: List<reportNote>, reportType: Format, date: CalenderDate,document: Document, reportText:String) {
+        val (expenseText, expenseDateName, expenseDate) = when (reportType) {
+            Format.DAILY_EXPENSE -> Triple(
+                "DAILY $reportText",
+                "Date :",
+                "${date.day} ${date.monthName}"
+            )
+
+            Format.MONTHLY_EXPENSE -> Triple(
+                "MONTHLY $reportText",
+                "Month of :",
+                "${date.monthName} ${date.year}"
+            )
+
+            Format.YEARLY_EXPENSE -> Triple("YEARLY $reportText", "Year :", date.year.toString())
+            else -> Triple("N/A", "N/A", "N/A")
+        }
+
+        val color = DeviceRgb(231, 211, 204)
+
+        val headerTable = Table(3).apply {
+            setWidth(percentage(100f))
+            addCell(
+                Cell().setBorder(SolidBorder(color, 3f)).setWidth(percentage(50f)).add(
+                    Paragraph(expenseText).setFontSize(20f).setBold()
+                        .setTextAlignment(TextAlignment.LEFT)
+                )
+            )
+            addCell(
+                Cell().setBackgroundColor(color).setBorder(null).add(
+                    Paragraph(expenseDateName).setFontSize(20f).setBold()
+                        .setTextAlignment(TextAlignment.LEFT)
+                )
+            )
+            addCell(
+                Cell().setBorder(null).setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                    Paragraph(expenseDate).setFontSize(20f).setBold()
+                        .setTextAlignment(TextAlignment.CENTER)
+                )
+            )
+            repeat(5) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
+        }
+        document.add(headerTable)
+
+        val expenseTable = Table(3).apply {
+            setWidth(percentage(100f))
+//                    setKeepTogether(true) // Prevents breaking if possible
+
+            // Define header row
+            addHeaderCell(
+                Cell().setBackgroundColor(color).add(
+                    Paragraph("$reportText CATEGORIES").setFontSize(14f).setBold()
+                        .setTextAlignment(TextAlignment.CENTER)
+                )
+            )
+            addHeaderCell(
+                Cell(1, 2).setBackgroundColor(color).add(
+                    Paragraph("AMOUNT").setFontSize(14f).setBold()
+                        .setTextAlignment(TextAlignment.CENTER)
+                )
+            )
+
+            var total = 0L
+            expenseData.forEach { item ->
+                total += item.amount
+                addCell(
+                    Cell().add(
+                        Paragraph(item.category).setFontSize(14f)
+                            .setTextAlignment(TextAlignment.CENTER)
+                    )
+                )
+                addCell(
+                    Cell().add(
+                        Paragraph(Utility.formatedValue(item.amount)).setFontSize(14f)
+                            .setTextAlignment(TextAlignment.CENTER)
+                    )
+                )
+                addCell(
+                    Cell().add(
+                        Paragraph(item.percentage).setFontSize(14f)
+                            .setTextAlignment(TextAlignment.CENTER)
+                    )
+                )
+            }
+
+            addCell(
+                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                    Paragraph("TOTAL ${reportText}S: ").setFontSize(14f)
+                        .setTextAlignment(TextAlignment.CENTER)
+                )
+            )
+            addCell(
+                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                    Paragraph(Utility.formatedValue(total)).setFontSize(14f)
+                        .setTextAlignment(TextAlignment.CENTER)
+                )
+            )
+            addCell(
+                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                    .add(Paragraph("100 %").setFontSize(14f).setTextAlignment(TextAlignment.CENTER))
+            )
+            repeat(5) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
+        }
+
+        document.add(expenseTable)
+
+        val descriptionTable = Table(expenseData.size + 2).apply {
+            setWidth(percentage(100f))
+//                    setKeepTogether(true) // Try to keep table together
+
+            // Set header row
+            addHeaderCell(
+                Cell().setBackgroundColor(color)
+                    .add(Paragraph("NO.").setBold().setTextAlignment(TextAlignment.CENTER))
+            )
+            addHeaderCell(
+                Cell().setBackgroundColor(color)
+                    .add(Paragraph("DESCRIPTION").setBold().setTextAlignment(TextAlignment.CENTER))
+            )
+
+            val mapCategory = mutableMapOf<String, Int>()
+            expenseData.forEachIndexed { index, item ->
+                addHeaderCell(
+                    Cell().setBackgroundColor(color).add(
+                        Paragraph(item.category).setBold().setTextAlignment(TextAlignment.CENTER)
+                    )
+                )
+                mapCategory[item.category] = index + 2
+            }
+
+            expenseFullData.forEachIndexed { serial, item ->
+                addCell(Cell().add(Paragraph((serial+1).toString()).setTextAlignment(TextAlignment.CENTER)))
+                addCell(Cell().add(Paragraph(item.note).setTextAlignment(TextAlignment.CENTER)))
+                for (i in 2 until expenseData.size + 2) {
+                    addCell(
+                        Cell().add(
+                            Paragraph(
+                                if (mapCategory[item.name] == i) Utility.formatedValue(
+                                    item.amount
+                                ) else ""
+                            ).setTextAlignment(TextAlignment.CENTER)
+                        )
+                    )
+                }
+            }
+            repeat(20) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
+        }
+        document.add(descriptionTable)
+        if(times==0)
+            document.add(AreaBreak())
+        times++;
+    }
+
+
+
+        fun percentage(value:Float):UnitValue
+        {
+            return UnitValue.createPercentValue(value)
+        }
+
+
+
+
         //provide options to select an available pdf viewer to view the pdf file
-        private fun openPdfFile(context:Context,filePath: String) {
+        fun openPdfFile(context:Context,filePath: String) {
             val file = File(filePath)
 
             if (file.exists()) {

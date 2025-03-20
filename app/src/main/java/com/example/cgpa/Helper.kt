@@ -30,6 +30,7 @@ class Helper(private val context: Context) {
     {
         const val TAG = "MainActivity"
         const val PDF_FILE = "ResultOutput.pdf"
+        const val PDF_REPORT_FILE = "report.pdf"
         const val TEXT_FILE = "ResultOutput.txt"
         const val ITEM_INFO_FILE = "ItemInfo.json"
         const val FOLDER = "MyFolder"

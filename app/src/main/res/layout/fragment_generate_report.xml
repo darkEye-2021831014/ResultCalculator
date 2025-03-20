@@ -49,18 +49,33 @@
         app:layout_constraintTop_toBottomOf="@id/back" />
 
     <TextView
-        android:id="@+id/select"
+        android:id="@+id/selectText"
         style="@style/autoSize"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Selected Date: "
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
+        android:text="Selected Date : "
+        android:textColor="@color/orange"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toStartOf="@id/selectDate"
         app:layout_constraintStart_toStartOf="@id/back"
         app:layout_constraintTop_toBottomOf="@id/dv" />
 
+    <TextView
+        android:id="@+id/selectDate"
+        style="@style/autoSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="12 / Jan / 2025"
+        android:textColor="@color/yellow"
+        app:layout_constraintHorizontal_weight="1.5"
+        app:layout_constraintStart_toEndOf="@id/selectText"
+        app:layout_constraintTop_toTopOf="@id/selectText"
+        app:layout_constraintEnd_toEndOf="@id/textView"/>
+
+
     <LinearLayout
+        android:id="@+id/datePickerContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/black"
@@ -69,8 +84,8 @@
         android:padding="10dp"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="@id/textView"
-        app:layout_constraintStart_toStartOf="@+id/select"
-        app:layout_constraintTop_toBottomOf="@+id/select">
+        app:layout_constraintStart_toStartOf="@+id/selectText"
+        app:layout_constraintTop_toBottomOf="@+id/selectText">
 
         <NumberPicker
             android:id="@+id/datePicker"
@@ -89,6 +104,50 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/generateButtonsContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintStart_toStartOf="@id/datePickerContainer"
+        app:layout_constraintTop_toBottomOf="@id/datePickerContainer"
+        app:layout_constraintEnd_toEndOf="@id/datePickerContainer"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dailyReport"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/purple"
+            android:text="DAILY REPORT\n12 Jan"
+            android:textColor="@color/cyan"
+            android:layout_weight="1"
+             />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/monthlyReport"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/purple"
+            android:text="MONTHLY REPORT\nJAN 2025"
+            android:textColor="@color/cyan"
+            android:layout_weight="1"
+             />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/yearlyReport"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/purple"
+            android:text="YEARLY REPORT\n2025"
+            android:textColor="@color/cyan"
+            android:layout_weight="1"
+             />
     </LinearLayout>
 
 

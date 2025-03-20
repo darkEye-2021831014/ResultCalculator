@@ -17,5 +17,8 @@ enum class Format {
     THIS_MONTH,
     LAST_MONTH,
     THIS_YEAR,
-    LAST_YEAR
+    LAST_YEAR,
+    DAILY_EXPENSE,
+    MONTHLY_EXPENSE,
+    YEARLY_EXPENSE
 }

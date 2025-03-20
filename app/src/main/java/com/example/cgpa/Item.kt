@@ -37,3 +37,22 @@ data class ChartInfo(
     val chart:Format,
     val isExpense:Boolean,
 )
+
+data class reportItem(
+    val category:String,
+    val amount:Long,
+    val percentage:String
+)
+
+data class CalenderDate(
+    val day:Int,
+    val month: Int,
+    val monthName:String,
+    val year:Int
+)
+
+data class reportNote(
+    val note:String,
+    val name:String,
+    val amount:Long
+)

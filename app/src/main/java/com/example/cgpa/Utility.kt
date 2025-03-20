@@ -3,6 +3,8 @@ package com.example.cgpa
 import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -13,6 +15,7 @@ import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 
@@ -54,6 +57,17 @@ class Utility {
         fun bottomSheet(activity:FragmentActivity, bottomSheet: BottomSheetDialogFragment, name:String)
         {
             bottomSheet.show(activity.supportFragmentManager, name)
+        }
+
+        fun getColor(context:Context,colorId:Int):Int
+        {
+            return ContextCompat.getColor(context,colorId)
+        }
+
+        //color a text part by part. one text will be colored in multiple color
+        fun textColor(spannable: Spannable, text:String, color:Int, fullText:String)
+        {
+            spannable.setSpan(ForegroundColorSpan(color), fullText.indexOf(text), fullText.indexOf(text) + text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
 
