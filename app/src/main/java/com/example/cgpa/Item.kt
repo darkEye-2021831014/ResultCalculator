@@ -11,7 +11,11 @@ data class Item(
 
 data class Date(
     val date:String,
-    val expenseIncome:String
+    val expenseIncome:String,
+    val day:Int,
+    val month:Int,
+    val monthName:String,
+    val year:Int
 )
 
 data class ItemInfo(

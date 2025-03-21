@@ -69,6 +69,11 @@ class RecordsFragment : Fragment() {
         currentYear.text = LocalDate.now().year.toString()
         currentMonth.text = LocalDate.now().format(DateTimeFormatter.ofPattern("MMM"))
 
+        var Ddate = Calendar.getInstance().get(Calendar.DATE)
+        var Dmonth =Calendar.getInstance().get(Calendar.MONTH)+1;
+        var DmonthName = SimpleDateFormat("MMM", Locale.getDefault()).format(Calendar.getInstance().time)
+        var Dyear = Calendar.getInstance().get(Calendar.YEAR)
+
         currentMonth.setOnClickListener {
             val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
@@ -84,6 +89,10 @@ class RecordsFragment : Fragment() {
                 // Update the UI
                 currentMonth.text = SimpleDateFormat("MMM", Locale.getDefault()).format(selectedCalendar.time)
                 currentYear.text = selectedYear.toString()
+
+                Dmonth = selectedMonth+1
+                Dyear = selectedYear
+                DmonthName = currentMonth.text.toString()
 
                 // Trigger UI update based on the new selected month
                 viewModel.userData.value?.let { updateUI(it) }
@@ -115,6 +124,16 @@ class RecordsFragment : Fragment() {
         // Exit App
         view.findViewById<Button>(R.id.exit).setOnClickListener {
             requireActivity().finishAffinity()
+        }
+
+        //handle header button monthly report click
+        view.findViewById<ImageButton>(R.id.monthlyReport).setOnClickListener {
+            val reportType = Format.MONTHLY_REPORT
+            val date = CalenderDate(Ddate,Dmonth,DmonthName,Dyear)
+
+            Utility.showToast(requireContext(),"Generating Monthly Report For \"${DmonthName.uppercase()} $Dyear\"")
+            CreateReport(requireContext(),requireActivity(),reportType,date,viewModel).generateReport(reportType,date)
+
         }
 
         //list of items
@@ -158,7 +177,15 @@ class RecordsFragment : Fragment() {
             true,
             onEditClick = { item -> showToast("Editing: $item") },
             onDeleteClick = { item -> deleteItem(item as Item) },
-            onDetailsClick = { item -> itemDetails(item as Item) }
+            onDetailsClick = { item -> itemDetails(item as Item) },
+            onDateClick = { item ->
+                val date = item as Date
+                Utility.showToast(requireContext(),"Generating Daily Report For \"${date.day} ${date.monthName.uppercase()}\"")
+                CreateReport(requireContext(),requireActivity(),Format.DAILY_REPORT,
+                    CalenderDate(date.day,date.month,date.monthName,date.year),viewModel).generateReport(
+                        Format.DAILY_REPORT, CalenderDate(date.day,date.month,date.monthName,date.year)
+                    )
+            }
         )
     }
 
@@ -170,6 +197,7 @@ class RecordsFragment : Fragment() {
         var expense = 0L
         var income = 0L
         var dateText = ""
+        var calenderDate:CalenderDate = CalenderDate(1,1,"Jan",2000);
 
         for (item in data) {
             if(item.monthName != currentMonth.text || item.year != currentYear.text.toString().toInt())
@@ -177,11 +205,12 @@ class RecordsFragment : Fragment() {
             //show only current months data
             if (item.date != date) {
                 if (date != -1) {
-                    addDateHeader(items, dateText, expense, income)
+                    addDateHeader(items, dateText, expense, income,calenderDate)
                     items.addAll(tmp)
                     tmp.clear()
                 }
                 dateText = getDateText(item)
+                calenderDate = CalenderDate(item.date,item.month,item.monthName,item.year)
                 date = item.date
                 expense = 0L
                 income = 0L
@@ -194,20 +223,20 @@ class RecordsFragment : Fragment() {
         }
 
         if (date != -1) {
-            addDateHeader(items, dateText, expense, income)
+            addDateHeader(items, dateText, expense, income,calenderDate)
             items.addAll(tmp)
         }
 
         return items
     }
 
-    private fun addDateHeader(items: MutableList<Any>, dateText: String, expense: Long, income: Long) {
+    private fun addDateHeader(items: MutableList<Any>, dateText: String, expense: Long, income: Long,date:CalenderDate) {
         val summary = when {
             expense == 0L -> "Income: $income"
             income == 0L -> "Expense: $expense"
             else -> "Expense: $expense  Income: $income"
         }
-        items.add(Date(dateText, summary))
+        items.add(Date(dateText, summary,date.day,date.month,date.monthName,date.year))
     }
 
     private fun getDateText(itemInfo: ItemInfo): String {

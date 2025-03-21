@@ -1,19 +1,12 @@
 package com.example.cgpa
 
-import android.app.Activity
-import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.OpenableColumns
 import android.util.Log
-import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
-import com.itextpdf.kernel.colors.Color
 import com.itextpdf.kernel.colors.ColorConstants
 import com.itextpdf.kernel.colors.DeviceRgb
 import com.itextpdf.kernel.pdf.PdfDocument
@@ -21,7 +14,6 @@ import com.itextpdf.kernel.pdf.PdfReader
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
-import com.itextpdf.kernel.pdf.canvas.parser.listener.SimpleTextExtractionStrategy
 import com.itextpdf.layout.Document
 import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Paragraph
@@ -30,10 +22,7 @@ import com.itextpdf.layout.properties.TextAlignment
 import com.itextpdf.layout.properties.UnitValue
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.text.Normalizer.Form
 
-import android.os.Environment
 import com.itextpdf.layout.borders.SolidBorder
 import com.itextpdf.layout.element.AreaBreak
 
@@ -157,11 +146,17 @@ class PdfManager(private val context:Context) {
             val pdfDocument = PdfDocument(writer)
             val document = Document(pdfDocument)
 
+            var isExpense = false
+
             if (expenseData.isNotEmpty()) {
+                isExpense = true
                 createReport(expenseData,expenseFullData,reportType,date,document,"EXPENSE")
             }
-            if(incomeData.isNotEmpty())
-                createReport(incomeData,incomeFullData,reportType,date,document,"INCOME")
+            if(incomeData.isNotEmpty()) {
+                if(isExpense)
+                    document.add(AreaBreak())
+                createReport(incomeData, incomeFullData, reportType, date, document, "INCOME")
+            }
 
         document.close()
 
@@ -169,23 +164,21 @@ class PdfManager(private val context:Context) {
         openPdfFile(context,file.absolutePath.toString())
     }
 
-        private var times=0;
-
     private fun createReport(expenseData: List<reportItem>, expenseFullData: List<reportNote>, reportType: Format, date: CalenderDate,document: Document, reportText:String) {
         val (expenseText, expenseDateName, expenseDate) = when (reportType) {
-            Format.DAILY_EXPENSE -> Triple(
+            Format.DAILY_REPORT -> Triple(
                 "DAILY $reportText",
                 "Date :",
                 "${date.day} ${date.monthName}"
             )
 
-            Format.MONTHLY_EXPENSE -> Triple(
+            Format.MONTHLY_REPORT -> Triple(
                 "MONTHLY $reportText",
                 "Month of :",
                 "${date.monthName} ${date.year}"
             )
 
-            Format.YEARLY_EXPENSE -> Triple("YEARLY $reportText", "Year :", date.year.toString())
+            Format.YEARLY_REPORT -> Triple("YEARLY $reportText", "Year :", date.year.toString())
             else -> Triple("N/A", "N/A", "N/A")
         }
 
@@ -316,17 +309,14 @@ class PdfManager(private val context:Context) {
                     )
                 }
             }
-            repeat(20) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
+            repeat(10) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
         }
         document.add(descriptionTable)
-        if(times==0)
-            document.add(AreaBreak())
-        times++;
     }
 
 
 
-        fun percentage(value:Float):UnitValue
+        private fun percentage(value:Float):UnitValue
         {
             return UnitValue.createPercentValue(value)
         }
@@ -335,7 +325,7 @@ class PdfManager(private val context:Context) {
 
 
         //provide options to select an available pdf viewer to view the pdf file
-        fun openPdfFile(context:Context,filePath: String) {
+        private fun openPdfFile(context:Context,filePath: String) {
             val file = File(filePath)
 
             if (file.exists()) {

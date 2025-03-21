@@ -15,7 +15,8 @@ class ItemAdapter(
     private val isClickable: Boolean,
     private val onEditClick: (Any) -> Unit,
     private val onDeleteClick: (Any) -> Unit,
-    private val onDetailsClick: (Any) -> Unit
+    private val onDetailsClick: (Any) -> Unit,
+    private val onDateClick:(Any) ->Unit
 ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     // ViewHolder - Holds views
@@ -42,40 +43,47 @@ class ItemAdapter(
 
     // Bind data to views
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        val item = itemList[position]
 
-        //this is an item
-        val item = itemList[position];
+        // Reset visibility and click listeners to prevent incorrect behavior due to view recycling
+        holder.dateLayout.visibility = View.GONE
+        holder.itemLayout.visibility = View.GONE
+        holder.itemView.setOnClickListener(null)
+        holder.itemView.setOnLongClickListener(null)
 
-        if(item is Item) {
-            holder.dateLayout.visibility = View.GONE
+        if (item is Item) {
             holder.itemLayout.visibility = View.VISIBLE
 
             holder.itemName.text = item.name
             holder.itemValue.text = item.value
             setDrawableStart(holder, item.icon)
 
-            // Long press to show options
-            if(isClickable) {
+            if (isClickable) {
                 holder.itemView.setOnLongClickListener {
                     showOptionsDialog(holder.itemView.context, item)
-                    true // Return true to consume the event
+                    true
                 }
 
                 holder.itemView.setOnClickListener {
                     onDetailsClick(item)
                 }
             }
-        }
-        else if(item is Date) // this is a date
-        {
+        } else if (item is Date) {
             holder.dateLayout.visibility = View.VISIBLE
-            holder.itemLayout.visibility = View.GONE
 
             holder.itemDate.text = item.date
             holder.dailyExpense.text = item.expenseIncome
-        }
 
+            // Ensure Date items are NOT clickable
+            holder.itemView.setOnClickListener{
+                onDateClick(item)
+            }
+            holder.itemView.setOnLongClickListener(null)
+
+
+        }
     }
+
 
     //set icon to textView itemName
     private fun setDrawableStart(holder: ItemViewHolder,drawable: Drawable?) {

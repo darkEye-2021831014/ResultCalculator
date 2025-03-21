@@ -110,7 +110,8 @@ class ChartThisMonth : Fragment() {
             false,
             onEditClick = {},
             onDeleteClick = {},
-            onDetailsClick = {}
+            onDetailsClick = {},
+            onDateClick = {}
         )
     }
 
