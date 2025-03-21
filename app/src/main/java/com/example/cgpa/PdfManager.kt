@@ -3,18 +3,33 @@ package com.example.cgpa
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.itextpdf.io.image.ImageData
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.io.source.ByteArrayOutputStream
 import com.itextpdf.kernel.colors.ColorConstants
 import com.itextpdf.kernel.colors.DeviceRgb
+import com.itextpdf.kernel.geom.PageSize
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfReader
 import com.itextpdf.kernel.pdf.PdfWriter
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor
 import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy
 import com.itextpdf.layout.Document
+import com.itextpdf.layout.borders.Border
 import com.itextpdf.layout.element.Cell
 import com.itextpdf.layout.element.Paragraph
 import com.itextpdf.layout.element.Table
@@ -25,6 +40,8 @@ import java.io.FileOutputStream
 
 import com.itextpdf.layout.borders.SolidBorder
 import com.itextpdf.layout.element.AreaBreak
+import com.itextpdf.layout.element.Image
+import com.itextpdf.layout.properties.VerticalAlignment
 
 
 private const val TAG="MainActivity"
@@ -150,12 +167,12 @@ class PdfManager(private val context:Context) {
 
             if (expenseData.isNotEmpty()) {
                 isExpense = true
-                createReport(expenseData,expenseFullData,reportType,date,document,"EXPENSE")
+                createReport(context,expenseData,expenseFullData,reportType,date,document,"EXPENSE")
             }
             if(incomeData.isNotEmpty()) {
                 if(isExpense)
                     document.add(AreaBreak())
-                createReport(incomeData, incomeFullData, reportType, date, document, "INCOME")
+                createReport(context,incomeData, incomeFullData, reportType, date, document, "INCOME")
             }
 
         document.close()
@@ -164,7 +181,8 @@ class PdfManager(private val context:Context) {
         openPdfFile(context,file.absolutePath.toString())
     }
 
-    private fun createReport(expenseData: List<reportItem>, expenseFullData: List<reportNote>, reportType: Format, date: CalenderDate,document: Document, reportText:String) {
+
+    private fun createReport(context:Context,expenseData: List<reportItem>, expenseFullData: List<reportNote>, reportType: Format, date: CalenderDate,document: Document, reportText:String) {
         val (expenseText, expenseDateName, expenseDate) = when (reportType) {
             Format.DAILY_REPORT -> Triple(
                 "DAILY $reportText",
@@ -183,6 +201,7 @@ class PdfManager(private val context:Context) {
         }
 
         val color = DeviceRgb(231, 211, 204)
+        val lessWhite = DeviceRgb(211,211,211)
 
         val headerTable = Table(3).apply {
             setWidth(percentage(100f))
@@ -199,7 +218,7 @@ class PdfManager(private val context:Context) {
                 )
             )
             addCell(
-                Cell().setBorder(null).setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                Cell().setBorder(null).setBackgroundColor(lessWhite).add(
                     Paragraph(expenseDate).setFontSize(20f).setBold()
                         .setTextAlignment(TextAlignment.CENTER)
                 )
@@ -250,25 +269,61 @@ class PdfManager(private val context:Context) {
             }
 
             addCell(
-                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                Cell().setBackgroundColor(lessWhite).add(
                     Paragraph("TOTAL ${reportText}S: ").setFontSize(14f)
                         .setTextAlignment(TextAlignment.CENTER)
                 )
             )
             addCell(
-                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY).add(
+                Cell().setBackgroundColor(lessWhite).add(
                     Paragraph(Utility.formatedValue(total)).setFontSize(14f)
                         .setTextAlignment(TextAlignment.CENTER)
                 )
             )
             addCell(
-                Cell().setBackgroundColor(ColorConstants.LIGHT_GRAY)
+                Cell().setBackgroundColor(lessWhite)
                     .add(Paragraph("100 %").setFontSize(14f).setTextAlignment(TextAlignment.CENTER))
             )
             repeat(5) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
         }
 
-        document.add(expenseTable)
+
+
+
+        val reportTable = Table(UnitValue.createPercentArray(floatArrayOf(60f,40f))).apply {
+            setWidth(UnitValue.createPercentValue(100f)) // Full width of the page
+
+            // First Column: Expense Table (60%)
+            val expenseCell = Cell().apply {
+                add(expenseTable) // Use your existing expense table
+                setBorder(Border.NO_BORDER)
+                setPaddingRight(10f) // Adds spacing between table and chart
+            }
+
+            // Second Column: Chart (40%)
+            val chartCell = Cell().apply {
+                val lineChart = createLineChart(context,expenseData) // Generate chart
+                val bitmap = getChartBitmap(lineChart)
+                val imageData = bitmapToImageData(bitmap)
+                val chartImage = Image(imageData)
+
+
+                chartImage.setWidth(UnitValue.createPercentValue(100f)) // Full width of the cell
+                chartImage.setAutoScale(true) // Auto scale to fit available height
+
+                add(chartImage)
+                setBorder(Border.NO_BORDER)
+                setVerticalAlignment(VerticalAlignment.MIDDLE)
+            }
+
+            // Add both cells to the table
+            addCell(expenseCell)
+            addCell(chartCell)
+        }
+
+        document.add(reportTable)
+
+
 
         val descriptionTable = Table(expenseData.size + 2).apply {
             setWidth(percentage(100f))
@@ -309,10 +364,110 @@ class PdfManager(private val context:Context) {
                     )
                 }
             }
-            repeat(10) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
+//            repeat(10) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
         }
         document.add(descriptionTable)
     }
+
+
+
+
+        private fun createLineChart(context: Context,expenseData: List<reportItem>): LineChart {
+            val lineChart = LineChart(context)
+
+            // Sample Data (X-values start from 0 now!)
+            val entries:MutableList<Entry> = mutableListOf()
+            val labels:MutableList<String> = mutableListOf()
+            //dummy entry
+            entries.add(Entry(0f,0f))
+            labels.add("")
+
+            var x=1
+            expenseData.forEach { item ->
+                entries.add(Entry(x.toFloat(),item.amount.toFloat()))
+                labels.add(item.category)
+                x++
+            }
+            //dummy entry
+            entries.add(Entry(x.toFloat(),0f))
+            labels.add("")
+
+
+            val chartColor = Utility.getColor(context,R.color.darkWhite)
+
+            val lineDataSet = LineDataSet(entries, "Sample Data").apply {
+                color = chartColor          // Line color
+                valueTextColor = Color.BLACK
+                lineWidth = 2f              // Line width
+                setDrawCircles(true)        // Enable circles at each data point
+                setCircleColor(chartColor)  // Set the color for the circle fill
+                circleHoleColor = Color.TRANSPARENT // No hole in the circle
+                setDrawFilled(true)         // Enable area filling under the line
+                fillColor = chartColor      // Fill color (area under the line)
+                fillAlpha = 80              // Adjust fill opacity (optional)
+            }
+
+            lineDataSet.valueFormatter = object : ValueFormatter() {
+                override fun getPointLabel(entry: Entry?): String {
+                    if (entry == null) return ""
+
+                    val minX = lineDataSet.values.minByOrNull { it.x }?.x // First X value
+                    val maxX = lineDataSet.values.maxByOrNull { it.x }?.x // Last X value
+
+                    return if (entry.x == minX || entry.x == maxX) "" else entry.y.toInt().toString()
+                }
+            }
+
+
+            lineChart.data = LineData(lineDataSet)
+
+            lineChart.xAxis.apply {
+                setDrawGridLines(false) // Ensure grid lines don’t interfere
+                position = XAxis.XAxisPosition.BOTTOM // Keep labels at the bottom
+                axisMinimum = 0f // Ensure X-axis starts at 0
+                axisLineWidth = 1f // Make axis line clearly visible
+//                yOffset = -2f // Adjust this value to align with Y-axis labels
+                valueFormatter = IndexAxisValueFormatter(labels)
+                granularity = 1f
+                labelRotationAngle = -91f // Rotate slightly to prevent crowding
+                yOffset = 10f
+            }
+
+
+            lineChart.axisLeft.apply {
+                setDrawGridLines(true) // Keep grid lines visible
+                setDrawAxisLine(false)
+                axisMinimum = 0f // Start from 0
+                xOffset = 2f // Adjust this to fine-tune alignment
+            }
+
+
+            // Disable Right Y-Axis
+            lineChart.axisRight.isEnabled = false
+            lineChart.legend.isEnabled = false
+            lineChart.description.isEnabled = false
+
+            lineChart.measure(600, 400)
+            lineChart.layout(0, 0, 600, 400)
+            lineChart.invalidate() // Refresh
+
+            return lineChart
+        }
+
+
+        private fun getChartBitmap(lineChart: LineChart): Bitmap {
+            return lineChart.chartBitmap
+        }
+
+        private fun bitmapToImageData(bitmap: Bitmap): ImageData {
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val bitmapData = stream.toByteArray()
+            return ImageDataFactory.create(bitmapData)
+        }
+
+
+
 
 
 

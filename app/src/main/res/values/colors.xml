@@ -16,6 +16,8 @@
     <color name="pink">#B322CA</color>
     <color name="orange">#FFA500</color>
     <color name="blue">#0000FF</color>
-    <color name="lessWhite">#e7d3cc</color>
+    <color name="darkWhite">#cea191</color>
+    <color name="lessWhite">#f3f3f3</color>
+
 
 </resources>
