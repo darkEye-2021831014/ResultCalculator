@@ -85,7 +85,7 @@
         android:tint="@color/gray" />
 
     <Button
-        android:id="@+id/Profile"
+        android:id="@+id/profile"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         style="?android:attr/buttonBarButtonStyle"

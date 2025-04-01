@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/budgetItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="8dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/stroke_background_selected">
+
+        <TextView
+            android:id="@+id/budgetDescription"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="Monthly Budget"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:gravity="center|start"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:padding="4dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/progressBar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.5"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:minHeight="20dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Remaining :"
+                        android:gravity="center|start"
+                        android:layout_weight="1"
+                        android:textColor="@color/darkWhite"
+                        />
+
+                    <TextView
+                        android:id="@+id/remaining"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="3,000"
+                        android:gravity="center|end"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height=".1dp"
+                    android:background="@color/lessGray"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"/>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:minHeight="20dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Budget :"
+                        android:gravity="center|start"
+                        android:layout_weight="1"
+                        android:textColor="@color/darkWhite"
+                        />
+
+                    <TextView
+                        android:id="@+id/budget"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="8,600"
+                        android:gravity="center|end"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:minHeight="20dp"
+
+                    android:layout_marginTop="4dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Expenses :"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:textColor="@color/darkWhite"
+                        />
+
+                    <TextView
+                        android:id="@+id/expense"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="5,600"
+                        android:gravity="center|end"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+</LinearLayout>

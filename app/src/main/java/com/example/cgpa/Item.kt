@@ -60,3 +60,12 @@ data class reportNote(
     val name:String,
     val amount:Long
 )
+
+data class BudgetItem(
+    val heading:String,
+    val startIcon:Drawable?,
+    val endIcon:Drawable?,
+    var budget:Long,
+    var expense:Long,
+    val isCategory:Boolean,
+)

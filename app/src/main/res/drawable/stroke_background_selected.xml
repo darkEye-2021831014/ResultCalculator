@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Pressed (when tapped) -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/lessGray"/> <!-- Color when pressed -->
+            <corners android:radius="10dp"/> <!-- Optional rounded corners -->
+        </shape>
+    </item>
+
+    <!-- Default (normal state) -->
+    <item android:drawable="@drawable/background_stroke"/>
+</selector>

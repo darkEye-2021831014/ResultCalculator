@@ -46,6 +46,7 @@ class ExpenseTrackerMain : AppCompatActivity() {
         val homeButton = findViewById<Button>(R.id.records)
         val chartsButton = findViewById<Button>(R.id.Charts)
         val budgetButton = findViewById<Button>(R.id.budget)
+        val profileButton = findViewById<Button>(R.id.profile)
 
         val addItemButton = findViewById<FloatingActionButton>(R.id.addItem)
         addItemButton.setOnClickListener {
@@ -55,6 +56,7 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
         homeButton.setOnClickListener { replaceFragment(RecordsFragment()) }
         chartsButton.setOnClickListener { replaceFragment(ChartFragment()) }
+        budgetButton.setOnClickListener { replaceFragment(BudgetFragment()) }
 //        searchButton.setOnClickListener { replaceFragment(SearchFragment()) }
 //        profileButton.setOnClickListener { replaceFragment(ProfileFragment()) }
 

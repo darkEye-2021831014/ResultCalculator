@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 class SharedViewModel : ViewModel() {
 
     val userData = MutableLiveData<MutableList<ItemInfo>>(mutableListOf())
+    val budgetData = MutableLiveData<MutableList<BudgetItem>>(mutableListOf())
+
     val dailyExchange = MutableLiveData<MutableList<DailyExchange>>(mutableListOf())
     val selectedItem = MutableLiveData<ItemInfo>()
     val selectedChart = MutableLiveData<ChartInfo>()
@@ -19,6 +21,11 @@ class SharedViewModel : ViewModel() {
                 sortUserData()
             }
             is DailyExchange -> updateLiveData(dailyExchange, data)
+            is BudgetItem ->{
+                val list =  budgetData.value ?: mutableListOf()
+                list.add(data)
+                budgetData.postValue(budgetData.value)
+            }
         }
     }
 
@@ -28,6 +35,7 @@ class SharedViewModel : ViewModel() {
         when (data) {
             is ItemInfo -> removeLiveDataItem(userData, data)
             is DailyExchange -> removeLiveDataItem(dailyExchange, data)
+            is BudgetItem -> removeLiveDataItem(budgetData,data)
         }
     }
 
@@ -36,6 +44,8 @@ class SharedViewModel : ViewModel() {
 
     // Clear all daily expenses
     fun clearDailyExpense() = clearLiveData(dailyExchange)
+
+    fun clearBudgetData() = clearLiveData(budgetData)
 
     // Sort userData by date in descending order
     fun sortUserData() {

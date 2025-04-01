@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -14,6 +15,10 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.MutableLiveData
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.BufferedWriter
@@ -259,6 +264,39 @@ class Helper(private val context: Context) {
 
 
 
+
+        fun progressBarCircular(pieChart: PieChart, progress: Float, centerMessage:String, textColor:Int) {
+            val entries = mutableListOf(
+                PieEntry(progress, ""),
+                PieEntry(100 - progress, "") // Empty part
+            )
+
+            val dataSet = PieDataSet(entries, "").apply {
+                colors = listOf(Color.YELLOW, Color.LTGRAY) // Progress and background
+                valueTextSize = 16f
+                setDrawValues(false) // Hide percentage outside
+            }
+
+            pieChart.apply {
+                data = PieData(dataSet)
+                setUsePercentValues(true)
+
+                animateY(700)
+                centerText = centerMessage
+                isDrawHoleEnabled = true
+                holeRadius = 80f
+                setHoleColor(Color.TRANSPARENT)
+                setCenterTextColor(textColor)
+                isHighlightPerTapEnabled = false
+                setTouchEnabled(false)
+                setCenterTextSize(8f)
+                center
+
+                description.isEnabled = false
+                legend.isEnabled = false
+                invalidate() // Refresh chart
+            }
+        }
 
 
 

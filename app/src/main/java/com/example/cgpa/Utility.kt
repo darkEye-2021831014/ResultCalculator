@@ -3,6 +3,7 @@ package com.example.cgpa
 import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -70,6 +71,11 @@ class Utility {
             spannable.setSpan(ForegroundColorSpan(color), fullText.indexOf(text), fullText.indexOf(text) + text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
+        //item can be a Button or textView...
+        fun setDrawable(item:Any, start:Drawable?,end:Drawable?,top:Drawable?,bottom:Drawable?){
+            if(item is TextView)
+                item.setCompoundDrawablesWithIntrinsicBounds(start,top,end,bottom)
+        }
 
 
     }

@@ -284,7 +284,6 @@ class PdfManager(private val context:Context) {
                 Cell().setBackgroundColor(lessWhite)
                     .add(Paragraph("100 %").setFontSize(14f).setTextAlignment(TextAlignment.CENTER))
             )
-            repeat(5) { addCell(Cell(1, 3).add(Paragraph(" ")).setBorder(null)) }
         }
 
 
@@ -319,6 +318,7 @@ class PdfManager(private val context:Context) {
             // Add both cells to the table
             addCell(expenseCell)
             addCell(chartCell)
+            repeat(5) { addCell(Cell(1, 2).add(Paragraph(" ")).setBorder(null)) }
         }
 
         document.add(reportTable)

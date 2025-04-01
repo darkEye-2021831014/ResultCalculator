@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SetBudgetFragment">
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toStartOf="@id/headerText"
+        android:background="@android:color/transparent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/d1"
+        app:tint="@color/white"
+        app:layout_constraintVertical_weight="1"
+        />
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Budget"
+        android:textStyle="bold"
+        style="@style/autoSize"
+        android:padding="18dp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintTop_toTopOf="@id/back"
+        app:layout_constraintEnd_toStartOf="@id/monthPicker"
+        app:layout_constraintBottom_toBottomOf="@id/back"/>
+
+    <NumberPicker
+        android:id="@+id/monthPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/headerText"
+        app:layout_constraintTop_toTopOf="@id/headerText"
+        app:layout_constraintBottom_toBottomOf="@id/headerText"
+        app:layout_constraintEnd_toStartOf="@id/yearPicker"
+        />
+
+    <NumberPicker
+        android:id="@+id/yearPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/monthPicker"
+        app:layout_constraintBottom_toBottomOf="@id/monthPicker"
+        app:layout_constraintStart_toEndOf="@id/monthPicker"/>
+
+    <View
+        android:id="@+id/d1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/lessGray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toTopOf="@id/budgetContainer"
+        app:layout_constraintVertical_weight="1"
+        />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/budgetContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@id/d1"
+        app:layout_constraintStart_toStartOf="@id/d1"
+        app:layout_constraintEnd_toEndOf="@id/d1"
+        app:layout_constraintVertical_weight="1"
+
+        app:layout_constraintBottom_toTopOf="@id/footer"/>
+
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/budgetContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <View
+            android:id="@+id/d2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lessGray" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addBudget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="+ Budget Settings"
+            android:layout_margin="18dp"
+            android:textColor="@color/black"
+            android:background="@drawable/button_background"/>
+<!--        <include-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="match_parent"-->
+<!--            layout="@layout/custom_keyboard" />-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/outsideKeyboard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/keyboard"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#661E1B1B"
+        android:visibility="gone"
+        />
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/custom_keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/outsideKeyboard"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

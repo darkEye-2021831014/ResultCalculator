@@ -15,7 +15,6 @@
         android:text="0"
         android:maxLines="3"
         android:textSize="24sp"
-        android:textAlignment="viewEnd"
         android:gravity="end|center"
         android:padding="10dp"
         android:textColor="@color/white"/>
@@ -23,24 +22,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/lessBlack"
         android:layout_margin="4dp"
         >
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/noteText"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:textSize="16sp"
-        android:gravity="end|center"
-        android:textAlignment="center"
+        android:padding="10dp"
+        android:layout_weight="1"
+        android:background="@color/lessBlack"
+        android:gravity="start|center"
         android:hint="Note :"
         android:paddingStart="5dp"/>
 
     <EditText
         android:id="@+id/noteField"
         android:background="@color/lessBlack"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:layout_weight="4"
         android:textAlignment="viewStart"
         android:gravity="start|center"
         android:hint="Enter a note..."
