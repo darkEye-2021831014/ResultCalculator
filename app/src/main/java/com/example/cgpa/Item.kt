@@ -69,3 +69,11 @@ data class BudgetItem(
     var expense:Long,
     val isCategory:Boolean,
 )
+
+data class MonthlyInfo(
+    val month:Int,
+    val monthName:String,
+    val year:Int,
+    var expense:Long,
+    var income:Long,
+)

@@ -20,5 +20,7 @@ enum class Format {
     LAST_YEAR,
     DAILY_REPORT,
     MONTHLY_REPORT,
-    YEARLY_REPORT
+    YEARLY_REPORT,
+    EXPENSE,
+    INCOME
 }

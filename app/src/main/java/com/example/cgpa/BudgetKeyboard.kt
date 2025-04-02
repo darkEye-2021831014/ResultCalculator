@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 
@@ -38,6 +39,7 @@ class BudgetKeyboard(private val view: View,
         noteField.visibility=View.GONE
     }
 
+
     fun dateButtonText(text:String){
         date.text = text
         Utility.setDrawable(date,null,null,null,null)
@@ -51,11 +53,14 @@ class BudgetKeyboard(private val view: View,
     }
 
 
-    fun okOperation(item:BudgetItem, itemPosition:Int){
+    fun okOperation(item:BudgetItem, viewModel: SharedViewModel){
         done.setOnClickListener {
             input = inputField.text.toString()
-            item.budget = getInput()
-            adapter.notifyItemChanged(itemPosition)
+            if(item.budget !=getInput()) {
+                viewModel.removeData(item)
+                item.budget = getInput()
+                viewModel.setData(item)
+            }
             hideKeyboard()
         }
     }

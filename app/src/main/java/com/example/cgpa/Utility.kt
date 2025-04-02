@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import java.text.SimpleDateFormat
 
 class Utility {
     companion object {
@@ -28,11 +29,23 @@ class Utility {
             Helper.saveItemInfoList(viewModel.userData, context)
         }
 
+        fun getDay():Int{
+            return Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        }
+
         fun getMonth(): Int {
             return Calendar.getInstance().get(Calendar.MONTH)+1
         }
         fun getYear(): Int {
             return Calendar.getInstance().get(Calendar.YEAR)
+        }
+
+        fun getMonthName():String{
+            return SimpleDateFormat("MMM", Locale.getDefault()).format(Calendar.getInstance().time)
+        }
+
+        fun getDateName():String{
+            return SimpleDateFormat("EEEE", Locale.getDefault()).format(Calendar.getInstance().time)
         }
 
         //comma separated value

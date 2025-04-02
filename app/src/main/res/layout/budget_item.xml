@@ -42,9 +42,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.5"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:layout_weight="3"
+                android:paddingStart="8dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -55,11 +54,10 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Remaining :"
+                        android:text="Remaining : "
                         android:gravity="center|start"
-                        android:layout_weight="1"
                         android:textColor="@color/darkWhite"
                         />
 
@@ -91,11 +89,10 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Budget :"
+                        android:text="Budget : "
                         android:gravity="center|start"
-                        android:layout_weight="1"
                         android:textColor="@color/darkWhite"
                         />
 
@@ -121,10 +118,9 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="Expenses :"
-                        android:layout_weight="1"
+                        android:text="Expenses : "
                         android:gravity="center|start"
                         android:textColor="@color/darkWhite"
                         />

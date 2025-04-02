@@ -12,10 +12,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
 import com.itextpdf.kernel.colors.ColorConstants
+import org.slf4j.helpers.Util
 
 class BudgetAdapter(
     private val itemList: MutableList<BudgetItem>,
-    private val onClick: (BudgetItem,Int) -> Unit,
+    private val onClick: (BudgetItem) -> Unit,
 ) : RecyclerView.Adapter<BudgetAdapter.ItemViewHolder>() {
 
     // ViewHolder - Holds views
@@ -53,9 +54,9 @@ class BudgetAdapter(
         holder.description.text = item.heading
         setDrawableStartEnd(holder,item.startIcon,item.endIcon)
 
-        holder.remaining.text = remaining.toString()
-        holder.budget.text = item.budget.toString()
-        holder.expense.text = item.expense.toString()
+        holder.remaining.text = Utility.formatedValue(remaining)
+        holder.budget.text = Utility.formatedValue(item.budget)
+        holder.expense.text = Utility.formatedValue(item.expense)
 
         if(item.budget == 0L)
             Helper.progressBarCircular(holder.pieChart,0F,"--", Color.WHITE)
@@ -65,7 +66,7 @@ class BudgetAdapter(
             Helper.progressBarCircular(holder.pieChart,percentage,"Remaining\n${percentage}%", Color.WHITE)
 
         holder.budgetItem.setOnClickListener {
-            onClick(item,position)
+            onClick(item)
         }
     }
 

@@ -30,6 +30,20 @@ open class KeyboardManager(private val view: View) {
 
     protected var input:String = "0"
 
+    protected val numberButtons = listOf(
+        R.id.btn_0 to "0",
+        R.id.btn_1 to "1",
+        R.id.btn_2 to "2",
+        R.id.btn_3 to "3",
+        R.id.btn_4 to "4",
+        R.id.btn_5 to "5",
+        R.id.btn_6 to "6",
+        R.id.btn_7 to "7",
+        R.id.btn_8 to "8",
+        R.id.btn_9 to "9"
+    )
+
+
 
 
     fun setInput(value:Long){
@@ -53,28 +67,16 @@ open class KeyboardManager(private val view: View) {
     }
 
 
-    fun inputOperation() {
-        // Handle number clicks
-        val numberButtons = listOf(
-            R.id.btn_0 to "0",
-            R.id.btn_1 to "1",
-            R.id.btn_2 to "2",
-            R.id.btn_3 to "3",
-            R.id.btn_4 to "4",
-            R.id.btn_5 to "5",
-            R.id.btn_6 to "6",
-            R.id.btn_7 to "7",
-            R.id.btn_8 to "8",
-            R.id.btn_9 to "9"
-        )
-
-
+    open fun inputOperation() {
         for ((buttonId, value) in numberButtons) {
-            view.findViewById<Button>(buttonId).setOnClickListener { appendText(inputField,value) }
+            view.findViewById<Button>(buttonId).setOnClickListener {
+                if(inputField.length() <= 11)
+                    appendText(value)
+            }
         }
     }
 
-    fun deleteOperation(){
+    open fun deleteOperation(){
         delete.setOnClickListener {
             if(inputField.text!="0")
                 inputField.text = inputField.text.toString().dropLast(1)
@@ -84,7 +86,7 @@ open class KeyboardManager(private val view: View) {
         }
     }
 
-    fun okOperation(){
+    open fun okOperation(){
         done.setOnClickListener {
             input = inputField.text.toString()
             keyboard.visibility = View.GONE
@@ -92,7 +94,7 @@ open class KeyboardManager(private val view: View) {
     }
 
 
-    private fun appendText(inputField: TextView, value: String) {
+    open fun appendText(value: String) {
         if(inputField.text.toString()=="0")
             inputField.text = value
         else

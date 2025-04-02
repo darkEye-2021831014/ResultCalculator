@@ -1,30 +1,20 @@
 package com.example.cgpa
 
 import android.content.Context
-import android.view.MotionEvent
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.NumberPicker
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import kotlin.math.abs
 
 class BudgetManager(private val viewModel: SharedViewModel,
-                    private val context: Context,
-                    private val recyclerView:RecyclerView,
-                    view:View) {
+                    private val context: Context) {
 
     private var day:Int=1
     private var month:Int=1
     private var year:Int = 2000
     private val months = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     private var expense = 0L
-    private val keyboard = BudgetKeyboard(view,context)
 
 
     fun setDateRange(datePicker:NumberPicker,min:Int, max:Int) {
@@ -42,7 +32,6 @@ class BudgetManager(private val viewModel: SharedViewModel,
         monthPicker.displayedValues = months
         monthPicker.value = currentMonth
         month=currentMonth
-        monthlyExpense();
     }
 
 
@@ -52,7 +41,6 @@ class BudgetManager(private val viewModel: SharedViewModel,
         yearPicker.maxValue = max
         yearPicker.value = currentYear
         year=currentYear
-        monthlyExpense();
     }
 
 
@@ -61,38 +49,34 @@ class BudgetManager(private val viewModel: SharedViewModel,
         day = datePicker.value
         month = monthPicker.value
         year = yearPicker.value
-        monthlyExpense()
+        monthlyBudget()
     }
 
     fun update(monthPicker: NumberPicker,yearPicker: NumberPicker)
     {
         month = monthPicker.value
         year = yearPicker.value
-        monthlyExpense()
+        monthlyBudget()
     }
 
-    private fun monthlyExpense(){
-        expense = 0L
-        viewModel.userData.value?.let {
-            it.forEach{ item ->
-                if(item.isExpense && item.month == month && item.year==year)
-                    expense+=abs(item.amount)
-            }
-        }
-        setMonthlyBudget()
-    }
 
-    private fun setMonthlyBudget(){
+    fun monthlyBudget(){
         val budget=0L
-        val expense = this.expense
+        val expense = viewModel.monthlyData.value?.get(month to year)?.expense?:0L
+        this.expense = expense
         val isCategory=false
         var isExist=false
 
         viewModel.budgetData.value?.let {
-            it.forEach { item->
+            for(item in it){
                 if(!item.isCategory) {
-                    item.expense = expense
+                    if(item.expense!=expense) {
+                        viewModel.removeData(item)
+                        item.expense = expense
+                        viewModel.setData(item)
+                    }
                     isExist = true
+                    break
                 }
             }
         }
@@ -107,43 +91,10 @@ class BudgetManager(private val viewModel: SharedViewModel,
                     isCategory
                 )
             )
-            Utility.log("New")
-        }
-
-
-        setUpRecyclerView()
-    }
-
-    private fun setUpRecyclerView(){
-        initializeKeyboard()
-        viewModel.budgetData.value?.let{data->
-            //assuming the monthly budget will always be the first item as it will be added first
-            val adapter = BudgetAdapter(
-                data,
-                onClick = {
-                    item,position->
-                    keyboard.setInput(item.budget)
-                    keyboard.setNoteText(
-                        if (item.isCategory) "Monthly Budget - ${item.heading}" else "Monthly Budget"
-                    )
-                    keyboard.showKeyboard()
-                    keyboard.okOperation(item,position)
-                }
-            )
-            keyboard.setAdapter(adapter)
-            recyclerView.adapter = adapter
         }
     }
 
 
-
-
-    private fun initializeKeyboard(){
-        keyboard.hideKeyboard()
-        keyboard.dateButtonText("CLEAR")
-        keyboard.minusButtonText("")
-        keyboard.plusButtonText("")
-    }
 
 
 

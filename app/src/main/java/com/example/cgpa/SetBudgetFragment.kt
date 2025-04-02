@@ -32,6 +32,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class SetBudgetFragment : BottomSheetDialogFragment() {
     private val viewModel by activityViewModels<SharedViewModel>()
+    private lateinit var keyboard:BudgetKeyboard
+    private lateinit var recyclerView: RecyclerView
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 //        return BottomSheetDialog(requireContext(), theme).apply {
@@ -51,8 +54,10 @@ class SetBudgetFragment : BottomSheetDialogFragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_set_budget, container, false)
 
+        keyboard = BudgetKeyboard(view,requireContext())
+
         val addBudget = view.findViewById<Button>(R.id.addBudget)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.budgetContainer)
+        recyclerView = view.findViewById<RecyclerView>(R.id.budgetContainer)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val monthPicker = view.findViewById<NumberPicker>(R.id.monthPicker)
@@ -60,18 +65,19 @@ class SetBudgetFragment : BottomSheetDialogFragment() {
 
 //        val outsideKeyboard = view.findViewById<LinearLayout>(R.id.outsideKeyboard)
 
-        val dateManager = BudgetManager(viewModel, requireContext(),recyclerView,view)
-        dateManager.setMonthRange(monthPicker)
-        dateManager.setYearRange(yearPicker, 2000, 2050)
+        val budgetManager = BudgetManager(viewModel, requireContext())
+        budgetManager.setMonthRange(monthPicker)
+        budgetManager.setYearRange(yearPicker, 2000, 2050)
+        budgetManager.monthlyBudget()
 
         monthPicker.setOnValueChangedListener { _, _, _ ->
-            dateManager.update(
+            budgetManager.update(
                 monthPicker,
                 yearPicker
             )
         }
         yearPicker.setOnValueChangedListener { _, _, _ ->
-            dateManager.update(
+            budgetManager.update(
                 monthPicker,
                 yearPicker
             )
@@ -79,10 +85,53 @@ class SetBudgetFragment : BottomSheetDialogFragment() {
 
 
 
-
-//        viewModel.clearBudgetData()
+        setUpRecyclerView()
         return view
     }
+
+
+
+
+    private fun setUpRecyclerView(){
+        initializeKeyboard()
+        viewModel.budgetData.observe(viewLifecycleOwner){data->
+            //assuming the monthly budget will always be the first item as it will be added first
+            val adapter = BudgetAdapter(
+                data,
+                onClick = {
+                        item->
+                    keyboard.setInput(item.budget)
+                    keyboard.setNoteText(
+                        if (item.isCategory) "Monthly Budget - ${item.heading}" else "Monthly Budget"
+                    )
+                    keyboard.showKeyboard()
+                    keyboard.okOperation(item,viewModel)
+                }
+            )
+            keyboard.setAdapter(adapter)
+            recyclerView.adapter = adapter
+        }
+    }
+
+
+
+
+    private fun initializeKeyboard(){
+        keyboard.hideKeyboard()
+        keyboard.dateButtonText("CLEAR")
+        keyboard.minusButtonText("")
+        keyboard.plusButtonText("")
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
