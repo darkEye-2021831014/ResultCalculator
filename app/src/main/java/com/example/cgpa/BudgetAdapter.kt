@@ -15,8 +15,10 @@ import com.itextpdf.kernel.colors.ColorConstants
 import org.slf4j.helpers.Util
 
 class BudgetAdapter(
+    private val context:Context,
     private val itemList: MutableList<BudgetItem>,
     private val onClick: (BudgetItem) -> Unit,
+    private val onLongClick:(BudgetItem) ->Unit,
 ) : RecyclerView.Adapter<BudgetAdapter.ItemViewHolder>() {
 
     // ViewHolder - Holds views
@@ -51,8 +53,8 @@ class BudgetAdapter(
         holder.itemView.setOnClickListener(null)
         holder.itemView.setOnLongClickListener(null)
 
-        holder.description.text = item.heading
-        setDrawableStartEnd(holder,item.startIcon,item.endIcon)
+        holder.description.text = if(item.isCategory) "Monthly Budget - ${item.heading}" else item.heading
+        setDrawableStartEnd(holder,Helper.loadIcon(item.startIcon, context),Helper.loadIcon(item.endIcon, context))
 
         holder.remaining.text = Utility.formatedValue(remaining)
         holder.budget.text = Utility.formatedValue(item.budget)
@@ -67,6 +69,10 @@ class BudgetAdapter(
 
         holder.budgetItem.setOnClickListener {
             onClick(item)
+        }
+        holder.budgetItem.setOnLongClickListener {
+            onLongClick(item)
+            true
         }
     }
 

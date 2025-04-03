@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    tools:context=".BudgetCategoriesFragment">
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="18dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toStartOf="@id/headerText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/d1"
+        app:tint="@color/white"
+        app:layout_constraintVertical_weight="0.75"
+        />
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Budget Categories"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/back"
+        app:layout_constraintTop_toTopOf="@id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/back"/>
+
+    <View
+        android:id="@+id/d1"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/lessGray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back"
+        app:layout_constraintBottom_toTopOf="@id/food"
+        />
+
+    <LinearLayout
+        android:id="@+id/food"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintTop_toBottomOf="@id/d1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/drinks">
+
+        <TextView
+            android:id="@+id/foodView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Food"
+            android:drawableStart="@drawable/food_record"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/foodBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/drinks"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintVertical_weight="1"
+
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/food"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cloth">
+
+        <TextView
+            android:id="@+id/drinksView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Drinks"
+            android:background="@android:color/transparent"
+            android:drawableStart="@drawable/drinks_records"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/drinksBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/cloth"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/drinks"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/education">
+
+        <TextView
+            android:id="@+id/clothView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Cloth"
+            android:drawableStart="@drawable/cloth_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/clothBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/education"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/cloth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/health">
+
+        <TextView
+            android:id="@+id/educationView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Education"
+            android:drawableStart="@drawable/education_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/educationBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/health"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/education"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/transport">
+
+        <TextView
+            android:id="@+id/healthView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Health"
+            android:drawableStart="@drawable/healthcare_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/healthBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/transport"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/health"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/phone">
+
+        <TextView
+            android:id="@+id/transportView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Transport"
+            android:drawableStart="@drawable/transportation_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/transportBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/transport"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/other">
+
+        <TextView
+            android:id="@+id/phoneView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:drawableStart="@drawable/phone_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/phoneBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/other"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintVertical_weight="1"
+
+        android:orientation="horizontal"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/stroke_background_selected"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/otherView"
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Other"
+            android:drawableStart="@drawable/other_records"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewStart"
+            android:gravity="center|start"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:drawablePadding="12dp"
+            android:textColor="@color/white" />
+        <TextView
+            android:id="@+id/otherBudget"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Edit"
+            android:background="@android:color/transparent"
+            android:textAlignment="viewEnd"
+            android:gravity="center|end"
+            android:layout_weight=".5"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_right"
+            android:drawableTint="@color/gray"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/outsideKeyboard"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/keyboard"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#661E1B1B"
+        android:visibility="gone"
+        />
+
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/custom_keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/outsideKeyboard"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,9 @@
 package com.example.cgpa
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.util.Locale
 import kotlin.math.abs
 
 class SharedViewModel : ViewModel() {
@@ -9,6 +11,7 @@ class SharedViewModel : ViewModel() {
     val userData = MutableLiveData<MutableList<ItemInfo>>(mutableListOf())
     val budgetData = MutableLiveData<MutableList<BudgetItem>>(mutableListOf())
     val monthlyData = MutableLiveData<MutableMap<Pair<Int,Int>,MonthlyInfo>>(mutableMapOf())
+    val monthlyCategoryData = MutableLiveData<MutableMap<Triple<Int,Int,String>,MonthlyInfo>>(mutableMapOf())
 
     val selectedItem = MutableLiveData<ItemInfo>()
     val selectedChart = MutableLiveData<ChartInfo>()
@@ -31,8 +34,20 @@ class SharedViewModel : ViewModel() {
             is BudgetItem ->{
                 val list =  budgetData.value ?: mutableListOf()
                 list.add(data)
-//                budgetData.postValue(budgetData.value)
+                list.sortBy { it.isCategory }
                 budgetData.value = list
+            }
+        }
+    }
+
+    fun addItem(item:Any, context:Context){
+        when(item){
+            is BudgetItem ->{
+                val list =  budgetData.value ?: mutableListOf()
+                list.add(item)
+                list.sortBy { it.isCategory }
+                budgetData.value = list
+                Helper.saveList(budgetData,context,Helper.BUDGET_ITEM_FILE)
             }
         }
     }
@@ -43,7 +58,21 @@ class SharedViewModel : ViewModel() {
         when (data) {
             is ItemInfo -> removeLiveDataItem(userData, data)
             is MonthlyInfo -> removeLiveDataItem(monthlyData, data)
-            is BudgetItem -> removeLiveDataItem(budgetData,data)
+            is BudgetItem -> {
+                if(budgetData.value?.contains(data) == true)
+                    removeLiveDataItem(budgetData,data)
+            }
+        }
+    }
+
+    fun removeItem(item:Any,context:Context){
+        when(item){
+            is BudgetItem->{
+                if(budgetData.value?.contains(item) == true) {
+                    removeLiveDataItem(budgetData, item)
+                    Helper.saveList(budgetData, context, Helper.BUDGET_ITEM_FILE)
+                }
+            }
         }
     }
 
@@ -96,15 +125,27 @@ class SharedViewModel : ViewModel() {
 
     private fun updateMonthlyData(data:ItemInfo,isAdded:Boolean){
         val map = monthlyData.value?: mutableMapOf()
-        if(data.isExpense)
+        val categoryMap = monthlyCategoryData.value?: mutableMapOf()
+        if(data.isExpense) {
             map.getOrPut(data.month to data.year) {
                 MonthlyInfo(data.month, data.monthName, data.year, 0, 0)
             }.expense += if (isAdded) abs(data.amount) else -abs(data.amount)
-        else
+
+            categoryMap.getOrPut(Triple(data.month,data.year, data.name)) {
+                MonthlyInfo(data.month, data.monthName, data.year, 0, 0)
+            }.expense += if (isAdded) abs(data.amount) else -abs(data.amount)
+        }
+        else {
             map.getOrPut(data.month to data.year) {
                 MonthlyInfo(data.month, data.monthName, data.year, 0, 0)
             }.income += if (isAdded) abs(data.amount) else -abs(data.amount)
+
+            categoryMap.getOrPut(Triple(data.month, data.year,data.name)) {
+                MonthlyInfo(data.month, data.monthName, data.year, 0, 0)
+            }.expense += if (isAdded) abs(data.amount) else -abs(data.amount)
+        }
         monthlyData.value = map
+        monthlyCategoryData.value = categoryMap
     }
 
 
@@ -112,6 +153,11 @@ class SharedViewModel : ViewModel() {
     private fun <T> clearLiveData(liveData: MutableLiveData<MutableList<T>>) {
 //        liveData.postValue(mutableListOf())
         liveData.value = mutableListOf()
+    }
+
+
+    fun <T> addList(liveData: MutableLiveData<MutableList<T>>, newList:MutableList<T>){
+        liveData.value = newList
     }
 
 }

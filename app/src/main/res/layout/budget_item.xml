@@ -13,12 +13,13 @@
         <TextView
             android:id="@+id/budgetDescription"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:text="Monthly Budget"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:drawablePadding="8dp"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:drawableEnd="@drawable/ic_right"
-            android:drawableTint="@color/gray"
             android:gravity="center|start"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -27,14 +28,16 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
             android:padding="8dp"
+            android:background="@android:color/transparent"
             android:orientation="horizontal">
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/progressBar"
                 android:layout_width="0dp"
+                android:background="@android:color/transparent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"/>
@@ -42,20 +45,22 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:layout_weight="3"
                 android:paddingStart="8dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:minHeight="20dp"
+                    android:background="@android:color/transparent"
                     android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
                         android:text="Remaining : "
                         android:gravity="center|start"
                         android:textColor="@color/darkWhite"
@@ -64,6 +69,7 @@
                     <TextView
                         android:id="@+id/remaining"
                         android:layout_width="0dp"
+                        android:background="@android:color/transparent"
                         android:layout_height="match_parent"
                         android:text="3,000"
                         android:gravity="center|end"
@@ -83,15 +89,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:minHeight="20dp"
+                    android:background="@android:color/transparent"
                     android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="Budget : "
+                        android:background="@android:color/transparent"
                         android:gravity="center|start"
                         android:textColor="@color/darkWhite"
                         />
@@ -101,6 +108,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:text="8,600"
+                        android:background="@android:color/transparent"
                         android:gravity="center|end"
                         android:layout_weight="1"
                         android:textColor="@color/white"/>
@@ -110,10 +118,9 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
                     android:orientation="horizontal"
-                    android:minHeight="20dp"
-
                     android:layout_marginTop="4dp"
                     android:layout_weight="1">
 
@@ -122,6 +129,7 @@
                         android:layout_height="match_parent"
                         android:text="Expenses : "
                         android:gravity="center|start"
+                        android:background="@android:color/transparent"
                         android:textColor="@color/darkWhite"
                         />
 
@@ -131,6 +139,7 @@
                         android:layout_height="match_parent"
                         android:text="5,600"
                         android:gravity="center|end"
+                        android:background="@android:color/transparent"
                         android:layout_weight="1"
                         android:textColor="@color/white"/>
 

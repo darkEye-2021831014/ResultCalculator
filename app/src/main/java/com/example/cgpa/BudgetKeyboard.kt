@@ -3,11 +3,13 @@ package com.example.cgpa
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 
 
@@ -57,13 +59,74 @@ class BudgetKeyboard(private val view: View,
         done.setOnClickListener {
             input = inputField.text.toString()
             if(item.budget !=getInput()) {
-                viewModel.removeData(item)
-                item.budget = getInput()
-                viewModel.setData(item)
+                if(item.isCategory && getInput() == 0L){
+                    viewModel.removeItem(item,context)
+                    val topItem = viewModel.budgetData.value?.first()
+                    topItem?.let {
+                        viewModel.removeItem(it,context)
+                        it.budget-=item.budget
+                        viewModel.addItem(it,context)
+                    }
+                }
+                else {
+                    val extra = getInput()-item.budget
+                    if(item.isCategory) {
+                        val topItem = viewModel.budgetData.value?.first()
+                        topItem?.let {
+                            viewModel.removeItem(it, context)
+                            it.budget += extra
+                            viewModel.addItem(it, context)
+                        }
+
+                        viewModel.removeItem(item, context)
+                        item.budget = getInput()
+                        viewModel.addItem(item, context)
+                    }
+                    else{
+                        var total =0L
+                        viewModel.budgetData.value?.let {
+                            for(i in 1 until it.size){
+                                total+=it[i].budget
+                            }
+                        }
+                        if(getInput() >= total) {
+                            viewModel.removeItem(item, context)
+                            item.budget = getInput()
+                            viewModel.addItem(item, context)
+                        }
+                        else
+                            Utility.showToast(context,"Monthly Budget Can not be Lower Than The Sum Of Category Budget")
+                    }
+
+                }
             }
             hideKeyboard()
         }
     }
+
+    fun okOperation(budgetView: TextView, viewModel: SharedViewModel, item:BudgetItem){
+        done.setOnClickListener {
+            input = inputField.text.toString()
+            if(item.budget !=getInput()) {
+                val extra = getInput()-item.budget
+
+                viewModel.removeItem(item,context)
+                item.budget = getInput()
+                viewModel.addItem(item,context)
+                budgetView.text = item.budget.toString()
+
+                val topItem = viewModel.budgetData.value?.first()
+                topItem?.let {
+                    viewModel.removeItem(it,context)
+                    it.budget+=extra
+                    viewModel.addItem(it,context)
+                }
+            }
+            hideKeyboard()
+        }
+    }
+
+
 
     fun clearOperation(){
         date.setOnClickListener {

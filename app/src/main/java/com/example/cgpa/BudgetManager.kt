@@ -67,29 +67,32 @@ class BudgetManager(private val viewModel: SharedViewModel,
         val isCategory=false
         var isExist=false
 
-        viewModel.budgetData.value?.let {
-            for(item in it){
-                if(!item.isCategory) {
-                    if(item.expense!=expense) {
-                        viewModel.removeData(item)
-                        item.expense = expense
-                        viewModel.setData(item)
-                    }
+        viewModel.budgetData.value?.toList()?.let {
+            it.forEach { item->
+                var cur = expense
+                if(item.isCategory)
+                    cur = viewModel.monthlyCategoryData.value?.get(Triple(month,year,item.heading))?.expense?:0L
+
+                viewModel.removeData(item)
+                item.expense = cur
+                viewModel.setData(item)
+                if(!item.isCategory)
                     isExist = true
-                    break
-                }
             }
         }
 
+
+
         if(!isExist) {
-            viewModel.setData(
+            viewModel.addItem(
                 BudgetItem(
                     "Monthly Budget", null,
-                    Helper.getIcon(context, R.drawable.ic_right),
+                    Helper.saveIcon(R.drawable.ic_right,context),
                     budget,
                     expense,
                     isCategory
-                )
+                ),
+                context
             )
         }
     }

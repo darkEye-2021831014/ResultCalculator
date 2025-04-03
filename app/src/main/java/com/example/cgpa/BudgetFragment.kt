@@ -2,8 +2,6 @@ package com.example.cgpa
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Message
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import org.slf4j.helpers.Util
-import org.w3c.dom.Text
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -82,9 +75,11 @@ class BudgetFragment : Fragment() {
 
 
 
+
+
         //monthly budget operations
         monthlyBudget.setOnClickListener {
-            Utility.bottomSheet(requireActivity(),SetBudgetFragment(),"SetBudgetFragment")
+            Utility.bottomSheet(requireActivity(),BudgetModificationFragment(),"BudgetModificationFragment")
         }
 
         val progressBar = view.findViewById<PieChart>(R.id.progressBar);
@@ -95,6 +90,7 @@ class BudgetFragment : Fragment() {
 
         viewModel.budgetData.observe(viewLifecycleOwner){
             data->
+
             val budgetItem = data.firstOrNull()  //first item is monthly budget
             val expenseValue = viewModel.monthlyData.value?.get(Utility.getMonth() to Utility.getYear())?.expense?:0L
             expense.text = Utility.formatedValue(expenseValue)

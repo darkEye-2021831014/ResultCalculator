@@ -24,7 +24,8 @@ import java.text.SimpleDateFormat
 class Utility {
     companion object {
 
-        fun deleteItem(itemInfo: ItemInfo, viewModel: SharedViewModel, context: Context) {
+
+        fun deleteItem(itemInfo: Any, viewModel: SharedViewModel, context: Context) {
             viewModel.removeData(itemInfo)
             Helper.saveItemInfoList(viewModel.userData, context)
         }

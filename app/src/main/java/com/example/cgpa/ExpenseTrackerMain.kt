@@ -40,7 +40,7 @@ class ExpenseTrackerMain : AppCompatActivity() {
         }
 
         //load saved data
-        loadItemInfo();
+        loadSavedData();
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
@@ -76,19 +76,31 @@ class ExpenseTrackerMain : AppCompatActivity() {
     }
 
 
-    private fun loadItemInfo()
+    private fun loadSavedData()
     {
 //        Helper.deleteAllSavedIcons(requireContext())
 //        Helper.saveItemInfoList(viewModel.userData,requireContext());
-        Log.i(Helper.TAG,"Loaded Saved ItemInfo")
 
 
 
-        val itemInfo = Helper.retrieveItemInfo(this);
-        for(item in itemInfo)
-        {
-//            if(item.month==month && item.year==year) //get the data of current month
-            viewModel.setData(item);
+        val userData = Helper.retrieveItemInfo(this);
+        val budgetData = Helper.loadList<BudgetItem>(this,Helper.BUDGET_ITEM_FILE)
+
+//        viewModel.addList(viewModel.userData,userData.toMutableList())
+        userData.let {
+            it.forEach{ item->
+                viewModel.setData(item)
+            }
+
         }
+        viewModel.addList(viewModel.budgetData,budgetData.toMutableList())
+        Utility.log("Successfully Loaded saved userData: $userData\nSuccessfully Loaded Saved budgetData: ${viewModel.budgetData}")
+
+
+//        for(item in itemInfo)
+//        {
+////            if(item.month==month && item.year==year) //get the data of current month
+//            viewModel.setData(item);
+//        }
     }
 }

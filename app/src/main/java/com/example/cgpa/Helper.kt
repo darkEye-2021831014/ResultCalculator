@@ -2,6 +2,7 @@ package com.example.cgpa
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -38,6 +39,7 @@ class Helper(private val context: Context) {
         const val PDF_REPORT_FILE = "report.pdf"
         const val TEXT_FILE = "ResultOutput.txt"
         const val ITEM_INFO_FILE = "ItemInfo.json"
+        const val BUDGET_ITEM_FILE = "budgetItem.json"
         const val FOLDER = "MyFolder"
 
 
@@ -126,11 +128,40 @@ class Helper(private val context: Context) {
             }
         }
 
+
+        fun <T> saveList (list: MutableLiveData<MutableList<T>>, context: Context,JSON_FILE_NAME:String): Boolean
+        {
+            // Create the directory if it doesn't exist
+            val directory = File(context.getExternalFilesDir(null), FOLDER)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+
+            val file = File(directory, JSON_FILE_NAME)
+            return try {
+                // Serialize the item list to JSON
+                val gson = Gson()
+                val json = gson.toJson(list.value)  // Get the value of LiveData
+
+                // Write the JSON data to the file (overwrite by default)
+                val outputStream = FileOutputStream(file, false)  // false for overwriting the file
+                outputStream.write(json.toByteArray())
+                outputStream.flush()
+                outputStream.close()
+                Utility.log("File Saved In: ${file.absolutePath}")
+                true
+            } catch (e: IOException) {
+                e.printStackTrace()
+                false
+            }
+        }
+
+
         fun saveIcon(iconId:Int, context: Context): String? {
             val icon = getIcon(context,iconId) ?: return null;
 
             // Check if this drawable is already saved
-            val drawableId = getDrawableId(iconId)
+            val drawableId = getDrawableId(context,iconId)
             val directory = File(context.getExternalFilesDir(null), Helper.FOLDER)
 
             if (!directory.exists()) {
@@ -150,6 +181,7 @@ class Helper(private val context: Context) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 outputStream.flush()
                 outputStream.close()
+                Utility.log("New Saved Icon ${iconFile.absolutePath}")
                 return iconFile.absolutePath // Return the new file path
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -158,26 +190,12 @@ class Helper(private val context: Context) {
             return null
         }
 
-        // Helper function to return a unique identifier for the drawable
-        fun getDrawableId(iconId:Int): String {
-            // You can customize this method to return a unique identifier based on your drawable.
-            // For example, you can use resource IDs or any other logic based on the drawable.
-            return when (iconId) {
-                R.drawable.food_record -> "icon_1"
-                R.drawable.drinks_records -> "icon_2"
-                R.drawable.cloth_records -> "icon_3"
-                R.drawable.education_records -> "icon_4"
-                R.drawable.healthcare_records -> "icon_5"
-                R.drawable.transportation_records -> "icon_6"
-                R.drawable.phone_records -> "icon_7"
-                R.drawable.other_records -> "icon_8"
-
-                R.drawable.other_records -> "icon_8"
-                R.drawable.other_records -> "icon_8"
-                R.drawable.other_records -> "icon_8"
-                R.drawable.other_records -> "icon_8"
-                // Add more cases as necessary
-                else -> "icon_${System.currentTimeMillis()}"
+        // Helper function to return the unique name of the drawable
+        private fun getDrawableId(context: Context, iconId: Int): String {
+            return try {
+                context.resources.getResourceEntryName(iconId) // Get the actual drawable name
+            } catch (e: Resources.NotFoundException) {
+                "icon_unknown" // Fallback name for invalid IDs
             }
         }
 
@@ -229,6 +247,30 @@ class Helper(private val context: Context) {
 
             return items
         }
+
+
+
+        inline fun <reified T> loadList(context: Context, JSON_FILE_NAME: String): List<T> {
+            val directory = File(context.getExternalFilesDir(null), FOLDER)
+            val file = File(directory, JSON_FILE_NAME)
+
+            if (!file.exists()) return emptyList()
+
+            return try {
+                val json = file.readText()
+                if (json.isNotEmpty()) {
+                    val gson = Gson()
+                    val itemType = object : TypeToken<List<T>>() {}.type
+                    gson.fromJson(json, itemType) ?: emptyList()
+                } else {
+                    emptyList()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                emptyList()
+            }
+        }
+
 
 
 
