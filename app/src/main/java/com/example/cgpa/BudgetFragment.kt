@@ -66,6 +66,10 @@ class BudgetFragment : Fragment() {
             monthOf.text = Utility.getMonthName()
         }
 
+        monthlyStat.setOnClickListener {
+            Utility.bottomSheet(requireActivity(),MonthlyStatFragment(),"MonthlyStatFragment")
+        }
+
 
 
 

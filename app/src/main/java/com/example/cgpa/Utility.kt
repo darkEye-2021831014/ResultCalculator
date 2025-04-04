@@ -49,6 +49,12 @@ class Utility {
             return SimpleDateFormat("EEEE", Locale.getDefault()).format(Calendar.getInstance().time)
         }
 
+        //1 index based months
+        fun getMonthNameOf(month:Int):String{
+            val months = arrayOf("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
+            return months[month-1]
+        }
+
         //comma separated value
         fun formatedValue(value:Long):String {
 //            return String.format("%,d", value)
