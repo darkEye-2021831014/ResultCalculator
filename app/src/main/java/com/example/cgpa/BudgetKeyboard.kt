@@ -57,15 +57,17 @@ class BudgetKeyboard(private val view: View,
 
     fun okOperation(item:BudgetItem, viewModel: SharedViewModel){
         done.setOnClickListener {
+            val list = viewModel.budgetData.value?: mutableListOf()
+
             input = inputField.text.toString()
             if(item.budget !=getInput()) {
                 if(item.isCategory && getInput() == 0L){
-                    viewModel.removeItem(item,context)
+                    list.remove(item)
                     val topItem = viewModel.budgetData.value?.first()
                     topItem?.let {
-                        viewModel.removeItem(it,context)
+                        list.remove(it)
                         it.budget-=item.budget
-                        viewModel.addItem(it,context)
+                        list.add(it)
                     }
                 }
                 else {
@@ -73,14 +75,14 @@ class BudgetKeyboard(private val view: View,
                     if(item.isCategory) {
                         val topItem = viewModel.budgetData.value?.first()
                         topItem?.let {
-                            viewModel.removeItem(it, context)
+                            list.remove(it)
                             it.budget += extra
-                            viewModel.addItem(it, context)
+                            list.add(it)
                         }
 
-                        viewModel.removeItem(item, context)
+                        list.remove(item)
                         item.budget = getInput()
-                        viewModel.addItem(item, context)
+                        list.add(item)
                     }
                     else{
                         var total =0L
@@ -90,9 +92,9 @@ class BudgetKeyboard(private val view: View,
                             }
                         }
                         if(getInput() >= total) {
-                            viewModel.removeItem(item, context)
+                            list.remove(item)
                             item.budget = getInput()
-                            viewModel.addItem(item, context)
+                            list.add(item)
                         }
                         else
                             Utility.showToast(context,"Monthly Budget Can not be Lower Than The Sum Of Category Budget")
@@ -100,28 +102,45 @@ class BudgetKeyboard(private val view: View,
 
                 }
             }
+
+            val top = list.first()
+            list.remove(top)
+            viewModel.budgetData.value = list
+            viewModel.addItem(top,context)
+
+
             hideKeyboard()
         }
     }
 
     fun okOperation(budgetView: TextView, viewModel: SharedViewModel, item:BudgetItem){
         done.setOnClickListener {
+            val list = viewModel.budgetData.value?: mutableListOf()
+
             input = inputField.text.toString()
             if(item.budget !=getInput()) {
                 val extra = getInput()-item.budget
 
-                viewModel.removeItem(item,context)
+                list.remove(item)
                 item.budget = getInput()
-                viewModel.addItem(item,context)
+                list.add(item)
                 budgetView.text = item.budget.toString()
 
                 val topItem = viewModel.budgetData.value?.first()
                 topItem?.let {
-                    viewModel.removeItem(it,context)
+                    list.remove(it)
                     it.budget+=extra
-                    viewModel.addItem(it,context)
+                    list.add(it)
                 }
             }
+
+            val top = list.first()
+            list.remove(top)
+            viewModel.budgetData.value = list
+            viewModel.addItem(top,context)
+
+
+
             hideKeyboard()
         }
     }

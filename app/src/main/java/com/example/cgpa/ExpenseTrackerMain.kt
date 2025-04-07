@@ -1,6 +1,7 @@
 package com.example.cgpa
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -11,7 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 import java.io.File
 
 class ExpenseTrackerMain : AppCompatActivity() {
@@ -22,6 +27,29 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        //create file inside folder if it doesn't exist
+        myFolder = File(getExternalFilesDir(null), Helper.FOLDER)
+
+        if (!myFolder.exists()) {
+            val success = myFolder.mkdirs()
+        }
+
+        //save all the image icons
+        saveIcons()
+
+
+        var isDataLoaded = false
+        // Install the system's splash screen
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition {
+            // This condition will keep the splash screen visible until your data loading is complete
+            !isDataLoaded
+        }
+
+
         enableEdgeToEdge()
         setContentView(R.layout.activity_expense_tracker_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -32,15 +60,16 @@ class ExpenseTrackerMain : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.lessBlack)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.lessBlack)
 
-        //create file inside folder if it doesn't exist
-        myFolder = File(getExternalFilesDir(null), Helper.FOLDER)
 
-        if (!myFolder.exists()) {
-            val success = myFolder.mkdirs()
+        // Load saved data while splash screen is visible
+        val context = this
+        lifecycleScope.launch {
+            Helper.loadSavedData(context,viewModel);
+            isDataLoaded=true
         }
 
-        //load saved data
-        loadSavedData();
+
+
 
         //code starts here
         val homeButton = findViewById<Button>(R.id.records)
@@ -57,14 +86,34 @@ class ExpenseTrackerMain : AppCompatActivity() {
         homeButton.setOnClickListener { replaceFragment(RecordsFragment()) }
         chartsButton.setOnClickListener { replaceFragment(ChartFragment()) }
         budgetButton.setOnClickListener { replaceFragment(BudgetFragment()) }
+        profileButton.setOnClickListener { replaceFragment(ProfileFragment()) }
 //        searchButton.setOnClickListener { replaceFragment(SearchFragment()) }
-//        profileButton.setOnClickListener { replaceFragment(ProfileFragment()) }
 
         // Set default fragment
         replaceFragment(RecordsFragment())
 
 
+
     }
+
+
+
+    private fun saveIcons(){
+        Helper.saveIcon(R.drawable.food_record,this)
+        Helper.saveIcon(R.drawable.drinks_records,this)
+        Helper.saveIcon(R.drawable.cloth_records,this)
+        Helper.saveIcon(R.drawable.education_records,this)
+        Helper.saveIcon(R.drawable.healthcare_records,this)
+        Helper.saveIcon(R.drawable.transportation_records,this)
+        Helper.saveIcon(R.drawable.phone_records,this)
+        Helper.saveIcon(R.drawable.other_records,this)
+
+        Helper.saveIcon(R.drawable.salary_records,this)
+        Helper.saveIcon(R.drawable.tution_records,this)
+        Helper.saveIcon(R.drawable.investment_records,this)
+        Helper.saveIcon(R.drawable.ic_right,this)
+    }
+
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
@@ -75,32 +124,4 @@ class ExpenseTrackerMain : AppCompatActivity() {
             activity.window.navigationBarColor = ContextCompat.getColor(activity, colorResId)
     }
 
-
-    private fun loadSavedData()
-    {
-//        Helper.deleteAllSavedIcons(requireContext())
-//        Helper.saveItemInfoList(viewModel.userData,requireContext());
-
-
-
-        val userData = Helper.retrieveItemInfo(this);
-        val budgetData = Helper.loadList<BudgetItem>(this,Helper.BUDGET_ITEM_FILE)
-
-//        viewModel.addList(viewModel.userData,userData.toMutableList())
-        userData.let {
-            it.forEach{ item->
-                viewModel.setData(item)
-            }
-
-        }
-        viewModel.addList(viewModel.budgetData,budgetData.toMutableList())
-        Utility.log("Successfully Loaded saved userData: $userData\nSuccessfully Loaded Saved budgetData: ${viewModel.budgetData}")
-
-
-//        for(item in itemInfo)
-//        {
-////            if(item.month==month && item.year==year) //get the data of current month
-//            viewModel.setData(item);
-//        }
-    }
 }

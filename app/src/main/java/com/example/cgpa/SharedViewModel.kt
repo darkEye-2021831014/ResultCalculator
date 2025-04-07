@@ -3,6 +3,9 @@ package com.example.cgpa
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.abs
 
@@ -15,9 +18,11 @@ class SharedViewModel : ViewModel() {
 
     val selectedItem = MutableLiveData<ItemInfo>()
     val selectedChart = MutableLiveData<ChartInfo>()
+    val userAccount = MutableLiveData<AccountInfo>()
 
     // Add data to the respective list
     fun setData(data: Any) {
+        val user = FirebaseAuth.getInstance().currentUser
         when (data) {
             is ItemInfo -> {
                 val list = userData.value ?: mutableListOf()
@@ -25,6 +30,12 @@ class SharedViewModel : ViewModel() {
                 sortUserData()
                 //update monthlyData for each new item
                 updateMonthlyData(data,true)
+
+                user?.let{
+                    viewModelScope.launch {
+                        Helper.uploadListToFirestoreSuspend(user.uid,list,Helper.ITEM_INFO_COLLECTION)
+                    }
+                }
             }
             is MonthlyInfo -> {
                 val currentMap = monthlyData.value ?: mutableMapOf()
@@ -41,6 +52,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun addItem(item:Any, context:Context){
+        val user = FirebaseAuth.getInstance().currentUser
         when(item){
             is BudgetItem ->{
                 val list =  budgetData.value ?: mutableListOf()
@@ -48,6 +60,12 @@ class SharedViewModel : ViewModel() {
                 list.sortBy { it.isCategory }
                 budgetData.value = list
                 Helper.saveList(budgetData,context,Helper.BUDGET_ITEM_FILE)
+
+                user?.let{
+                    viewModelScope.launch {
+                        Helper.uploadListToFirestoreSuspend(user.uid,list,Helper.BUDGET_ITEM_COLLECTION)
+                    }
+                }
             }
         }
     }
@@ -55,8 +73,17 @@ class SharedViewModel : ViewModel() {
 
     // Remove data from the respective list
     fun removeData(data: Any) {
+        val user = FirebaseAuth.getInstance().currentUser
         when (data) {
-            is ItemInfo -> removeLiveDataItem(userData, data)
+            is ItemInfo -> {
+                removeLiveDataItem(userData, data)
+
+                user?.let{
+                    viewModelScope.launch {
+                        Helper.uploadListToFirestoreSuspend(user.uid,userData.value?.toList()?: listOf(),Helper.ITEM_INFO_COLLECTION)
+                    }
+                }
+            }
             is MonthlyInfo -> removeLiveDataItem(monthlyData, data)
             is BudgetItem -> {
                 if(budgetData.value?.contains(data) == true)
@@ -66,11 +93,18 @@ class SharedViewModel : ViewModel() {
     }
 
     fun removeItem(item:Any,context:Context){
+        val user = FirebaseAuth.getInstance().currentUser
         when(item){
             is BudgetItem->{
                 if(budgetData.value?.contains(item) == true) {
                     removeLiveDataItem(budgetData, item)
                     Helper.saveList(budgetData, context, Helper.BUDGET_ITEM_FILE)
+
+                    user?.let{
+                        viewModelScope.launch {
+                            Helper.uploadListToFirestoreSuspend(user.uid,budgetData.value?.toList()?: listOf(),Helper.BUDGET_ITEM_COLLECTION)
+                        }
+                    }
                 }
             }
         }
@@ -100,14 +134,12 @@ class SharedViewModel : ViewModel() {
                 .thenByDescending { it.date })
             ?.toMutableList()
         userData.postValue(userData.value) // Ensures LiveData updates correctly
-//        userData.value = userData.value
     }
 
     // Generic function to update LiveData by adding an item
     private fun <T> updateLiveData(liveData: MutableLiveData<MutableList<T>>, item: T) {
         val list = liveData.value ?: mutableListOf()
         list.add(item)
-//        liveData.postValue(list) // Ensures LiveData updates on the main thread
         liveData.value = list
     }
 
@@ -115,7 +147,6 @@ class SharedViewModel : ViewModel() {
     private fun <T> removeLiveDataItem(liveData: MutableLiveData<MutableList<T>>, item: T) {
         val list = liveData.value ?: return
         list.remove(item)
-//        liveData.postValue(list)
         liveData.value = list
 
         if(item is ItemInfo){
@@ -123,7 +154,7 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    private fun updateMonthlyData(data:ItemInfo,isAdded:Boolean){
+    fun updateMonthlyData(data:ItemInfo,isAdded:Boolean){
         val map = monthlyData.value?: mutableMapOf()
         val categoryMap = monthlyCategoryData.value?: mutableMapOf()
         if(data.isExpense) {
@@ -151,13 +182,27 @@ class SharedViewModel : ViewModel() {
 
     // Generic function to clear a LiveData list
     private fun <T> clearLiveData(liveData: MutableLiveData<MutableList<T>>) {
-//        liveData.postValue(mutableListOf())
         liveData.value = mutableListOf()
     }
 
 
-    fun <T> addList(liveData: MutableLiveData<MutableList<T>>, newList:MutableList<T>){
+    inline fun <reified T> addList(liveData: MutableLiveData<MutableList<T>>, newList:MutableList<T>){
         liveData.value = newList
+        if(T::class == ItemInfo::class){
+            clearMonthlyData()
+            userData.value?.let{
+                it.forEach {
+                    item->
+                    updateMonthlyData(item,true)
+                }
+            }
+            sortUserData()
+        }
+        else if(T::class == BudgetItem::class){
+            val list = budgetData.value?: mutableListOf()
+            list.sortBy { it.isCategory }
+            budgetData.value= list
+        }
     }
 
 }

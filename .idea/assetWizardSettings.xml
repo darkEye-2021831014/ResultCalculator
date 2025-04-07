@@ -307,7 +307,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/chevron_right/baseline_chevron_right_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/person/baseline_person_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -317,9 +317,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="898989" />
-                            <entry key="outputName" value="ic_right" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../pdfReport.svg" />
+                            <entry key="outputName" value="google_icon" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../../../Google__G__logo.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -1,6 +1,7 @@
 package com.example.cgpa
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 
 data class Item(
     val name:String,
@@ -19,16 +20,16 @@ data class Date(
 )
 
 data class ItemInfo(
-    var name:String,
-    var icon:String?,
-    var amount:Long,
-    var isExpense:Boolean,
-    var date:Int,
-    var month:Int,
-    var year: Int,
-    var monthName:String,
-    var dateName:String,
-    var note:String?,
+    var name:String="",
+    var icon:String?=null,
+    var amount:Long=0L,
+    var isExpense:Boolean=false,
+    var date:Int=1,
+    var month:Int=1,
+    var year: Int=2000,
+    var monthName:String="Jan",
+    var dateName:String="",
+    var note:String?=null,
 )
 
 data class DailyExchange(
@@ -62,12 +63,12 @@ data class reportNote(
 )
 
 data class BudgetItem(
-    val heading:String,
-    val startIcon:String?,
-    val endIcon:String?,
-    var budget:Long,
-    var expense:Long,
-    val isCategory:Boolean,
+    var heading:String="",
+    var startIcon:String?=null,
+    var endIcon:String?=null,
+    var budget:Long=0L,
+    var expense:Long=0L,
+    var isCategory:Boolean=false,
 )
 
 data class MonthlyInfo(
@@ -76,4 +77,15 @@ data class MonthlyInfo(
     val year:Int,
     var expense:Long,
     var income:Long,
+)
+
+data class AccountInfo(
+    var name:String?,
+    var email:String?,
+    var photoUrl: String?,
+    var uid:String,
+    var signInButtonText:String,
+    var buttonColor:Int,
+    var startIcon:Drawable?,
+    var endIcon: Drawable?
 )

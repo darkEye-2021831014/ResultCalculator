@@ -20,8 +20,14 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
@@ -40,6 +46,8 @@ class Helper(private val context: Context) {
         const val TEXT_FILE = "ResultOutput.txt"
         const val ITEM_INFO_FILE = "ItemInfo.json"
         const val BUDGET_ITEM_FILE = "budgetItem.json"
+        const val ITEM_INFO_COLLECTION = "ItemInfo"
+        const val BUDGET_ITEM_COLLECTION = "budgetItem"
         const val FOLDER = "MyFolder"
 
 
@@ -129,7 +137,7 @@ class Helper(private val context: Context) {
         }
 
 
-        fun <T> saveList (list: MutableLiveData<MutableList<T>>, context: Context,JSON_FILE_NAME:String): Boolean
+        fun <T:Any> saveList (list: MutableLiveData<MutableList<T>>, context: Context,JSON_FILE_NAME:String): Boolean
         {
             // Create the directory if it doesn't exist
             val directory = File(context.getExternalFilesDir(null), FOLDER)
@@ -339,6 +347,99 @@ class Helper(private val context: Context) {
                 invalidate() // Refresh chart
             }
         }
+
+
+
+
+
+
+
+        suspend fun <T : Any> uploadListToFirestoreSuspend(
+            userId: String,
+            itemList: List<T>,
+            collectionName: String
+        ) = withContext(Dispatchers.IO) {
+            val db = FirebaseFirestore.getInstance()
+            val userCollection = db.collection("users").document(userId).collection(collectionName)
+
+            try {
+                val snapshot = Tasks.await(userCollection.get())
+
+                val batch = db.batch()
+                snapshot.documents.forEach { batch.delete(it.reference) }
+
+                itemList.forEach { item ->
+                    val doc = userCollection.document()
+                    batch.set(doc, item)
+                }
+
+                Tasks.await(batch.commit())
+                Utility.log("Upload successful to $collectionName")
+            } catch (e: Exception) {
+                Utility.log("Upload failed: ${e.message}")
+            }
+        }
+
+
+
+
+
+        suspend fun <T : Any> downloadListFromFirestoreSuspend(
+            userId: String,
+            collectionName: String,
+            clazz: Class<T>
+        ): List<T> = withContext(Dispatchers.IO) {
+            val db = FirebaseFirestore.getInstance()
+            try {
+                val snapshot = Tasks.await(
+                    db.collection("users")
+                        .document(userId)
+                        .collection(collectionName)
+                        .get()
+                )
+                snapshot.documents.mapNotNull { it.toObject(clazz) }
+            } catch (e: Exception) {
+                Utility.log("Download failed: ${e.message}")
+                emptyList()
+            }
+        }
+
+
+
+
+
+
+        //prioritize loading account data first over local data
+        suspend fun loadSavedData(context: Context, viewModel: SharedViewModel) {
+            val user = FirebaseAuth.getInstance().currentUser
+
+            val userData = retrieveItemInfo(context)
+            val budgetData = loadList<BudgetItem>(context, BUDGET_ITEM_FILE)
+
+            if (user != null) {
+                val remoteUserData = downloadListFromFirestoreSuspend(user.uid, ITEM_INFO_COLLECTION, ItemInfo::class.java)
+                val remoteBudgetData = downloadListFromFirestoreSuspend(user.uid, BUDGET_ITEM_COLLECTION, BudgetItem::class.java)
+
+                // Update ViewModel with downloaded data
+                viewModel.addList(viewModel.userData,remoteUserData.toMutableList())
+                viewModel.addList(viewModel.budgetData, remoteBudgetData.toMutableList())
+
+                // Save downloaded data to local storage
+                saveList(viewModel.userData, context, ITEM_INFO_FILE)
+                saveList(viewModel.budgetData, context, BUDGET_ITEM_FILE)
+
+                Utility.log("UserData and BudgetData Loaded from Firestore and Saved Locally")
+            } else {
+                viewModel.addList(viewModel.userData,userData.toMutableList())
+                viewModel.addList(viewModel.budgetData, budgetData.toMutableList())
+
+                Utility.log("Loaded Local userData: $userData")
+                Utility.log("Loaded Local budgetData: $budgetData")
+            }
+        }
+
+
+
 
 
 

@@ -61,33 +61,33 @@ class BudgetManager(private val viewModel: SharedViewModel,
 
 
     fun monthlyBudget(){
-        val budget=0L
-        val expense = viewModel.monthlyData.value?.get(month to year)?.expense?:0L
+        val budget = 0L
+        val expense = viewModel.monthlyData.value?.get(month to year)?.expense ?: 0L
         this.expense = expense
-        val isCategory=false
-        var isExist=false
+        val isCategory = false
+        var isExist = false
 
-        viewModel.budgetData.value?.toList()?.let {
-            it.forEach { item->
-                var cur = expense
-                if(item.isCategory)
-                    cur = viewModel.monthlyCategoryData.value?.get(Triple(month,year,item.heading))?.expense?:0L
+        val list = viewModel.budgetData.value ?: mutableListOf()
 
-                viewModel.removeData(item)
-                item.expense = cur
-                viewModel.setData(item)
-                if(!item.isCategory)
-                    isExist = true
+        list.forEach { item ->
+            var cur = expense
+            if (item.isCategory) {
+                cur = viewModel.monthlyCategoryData.value
+                    ?.get(Triple(month, year, item.heading))?.expense ?: 0L
+            } else {
+                isExist = true
             }
+            item.expense = cur // update in place
         }
 
+        viewModel.budgetData.value = list
 
 
-        if(!isExist) {
+        if (!isExist) {
             viewModel.addItem(
                 BudgetItem(
                     "Monthly Budget", null,
-                    Helper.saveIcon(R.drawable.ic_right,context),
+                    Helper.saveIcon(R.drawable.ic_right, context),
                     budget,
                     expense,
                     isCategory
@@ -96,6 +96,7 @@ class BudgetManager(private val viewModel: SharedViewModel,
             )
         }
     }
+
 
 
 
