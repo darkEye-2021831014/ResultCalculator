@@ -189,6 +189,19 @@ class BudgetModificationFragment : BottomSheetDialogFragment() {
             behavior.peekHeight = 0 // Start at the very bottom
             behavior.state = BottomSheetBehavior.STATE_COLLAPSED // Ensure it starts collapsed (not hidden)
 
+            behavior.isDraggable = false
+//            behavior.skipCollapsed = true
+//            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            })
+
             // Smooth animation from bottom to full screen
             val animator = ValueAnimator.ofInt(0, resources.displayMetrics.heightPixels)
             animator.duration = 1000 // Slow animation (1 second)
