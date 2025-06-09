@@ -64,6 +64,10 @@ dependencies {
   implementation libs.glide
   implementation libs.kotlinx.coroutines.play.services
 
+  implementation libs.kotlinx.coroutines.android
+  implementation libs.kotlinx.coroutines.core
+  implementation libs.androidx.lifecycle.viewmodel.ktx.v262
+
 
 
 

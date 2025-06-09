@@ -16,8 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.system.measureTimeMillis
 
 class ExpenseTrackerMain : AppCompatActivity() {
 
@@ -62,9 +65,15 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
 
         // Load saved data while splash screen is visible
+        viewModel.mode.value = null //normal mode
+
         val context = this
         lifecycleScope.launch {
-            Helper.loadSavedData(context,viewModel);
+            val timeUsed = measureTimeMillis {
+                //This Function is used to measure the time taken by all codes inside it
+                Helper.loadSavedData(context,viewModel);
+            }
+            Utility.log("Loading Saved Data Took: $timeUsed ms.")
             isDataLoaded=true
         }
 
@@ -91,10 +100,8 @@ class ExpenseTrackerMain : AppCompatActivity() {
 
         // Set default fragment
         replaceFragment(RecordsFragment())
-
-
-
     }
+
 
 
 

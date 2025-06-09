@@ -30,6 +30,7 @@ data class ItemInfo(
     var monthName:String="Jan",
     var dateName:String="",
     var note:String?=null,
+    var id:String?=null
 )
 
 data class DailyExchange(
@@ -69,6 +70,7 @@ data class BudgetItem(
     var budget:Long=0L,
     var expense:Long=0L,
     var isCategory:Boolean=false,
+    var id:String?=null
 )
 
 data class MonthlyInfo(
@@ -88,4 +90,13 @@ data class AccountInfo(
     var buttonColor:Int,
     var startIcon:Drawable?,
     var endIcon: Drawable?
+)
+
+data class SharedItem(
+    var name:String? = null,
+    var owner:String? = null,
+    var emails:MutableList<String> = mutableListOf(),
+    var id:String?=null,
+    var items:MutableList<ItemInfo> = mutableListOf(),
+    var budgets:MutableList<BudgetItem> = mutableListOf()
 )

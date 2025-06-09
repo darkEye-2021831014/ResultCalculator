@@ -24,7 +24,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -89,10 +93,15 @@ class ProfileFragment : Fragment() {
 
         signInButton.setOnClickListener {
             val curUser = FirebaseAuth.getInstance().currentUser
-            if(curUser!=null)
+            if (curUser != null)
                 profileManager.signOut()
             else
                 signIn()
+        }
+
+        //shared button
+        view.findViewById<Button>(R.id.shared).setOnClickListener{
+            Utility.bottomSheet(requireActivity(),SharedRecordsManager(),"SharedRecordsManager")
         }
 
         return view
@@ -126,8 +135,10 @@ class ProfileFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     Utility.showToast(requireContext(),"Sign In Successful.")
-                    profileManager.signInSuccessful()
-                    loadData()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        profileManager.signInSuccessful()
+                        loadData()
+                    }
                 } else {
                     // If sign-in fails, display a message to the user
                     Utility.showToast(requireContext(),"Authentication Failed")
@@ -136,10 +147,8 @@ class ProfileFragment : Fragment() {
     }
 
 
-    private fun loadData(){
-        lifecycleScope.launch {
-            Helper.loadSavedData(requireContext(),viewModel)
-        }
+    private suspend fun loadData(){
+        Helper.loadSavedData(requireContext(), viewModel)
     }
 
 

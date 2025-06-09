@@ -22,12 +22,22 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObjects
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.slf4j.helpers.Util
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileInputStream
@@ -35,6 +45,7 @@ import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.nio.charset.Charset
+import java.util.UUID
 
 
 class Helper(private val context: Context) {
@@ -46,9 +57,14 @@ class Helper(private val context: Context) {
         const val TEXT_FILE = "ResultOutput.txt"
         const val ITEM_INFO_FILE = "ItemInfo.json"
         const val BUDGET_ITEM_FILE = "budgetItem.json"
+        const val SHARED_ITEM_FILE = "sharedItem.json"
         const val ITEM_INFO_COLLECTION = "ItemInfo"
         const val BUDGET_ITEM_COLLECTION = "budgetItem"
+        const val SHARED_ITEM_COLLECTION = "sharedItem"
+
         const val FOLDER = "MyFolder"
+        const val COLLECTION = "User"
+        const val SHARED = "Shared"
 
 
         fun writeTextFile(myFolder: File,fileContent:String){
@@ -355,29 +371,64 @@ class Helper(private val context: Context) {
 
 
         suspend fun <T : Any> uploadListToFirestoreSuspend(
-            userId: String,
+            userId: String?,
             itemList: List<T>,
             collectionName: String
         ) = withContext(Dispatchers.IO) {
-            val db = FirebaseFirestore.getInstance()
-            val userCollection = db.collection("users").document(userId).collection(collectionName)
-
             try {
-                val snapshot = Tasks.await(userCollection.get())
+                val collection = Firebase.firestore
+                    .collection(COLLECTION)
+                    .document(userId.toString())
+                    .collection(collectionName)
 
-                val batch = db.batch()
-                snapshot.documents.forEach { batch.delete(it.reference) }
+                for (item in itemList) {
 
-                itemList.forEach { item ->
-                    val doc = userCollection.document()
-                    batch.set(doc, item)
+                    var customId = UUID.randomUUID().toString()
+                    if (item is ItemInfo && item.id.isNullOrEmpty()) {
+                        customId = "${item.name}_$customId"
+                        item.id = customId
+                    } else if (item is BudgetItem && item.id.isNullOrEmpty()) {
+                        customId = "${item.heading}_$customId"
+                        item.id = customId
+                    }
+                    else if( item is SharedItem && item.id.isNullOrEmpty()){
+                        customId = "${item.name}_$customId"
+                        item.id = customId
+                    }
+
+
+                    val id = when(item) {
+                        is ItemInfo -> item.id
+                        is BudgetItem -> item.id
+                        is SharedItem -> item.id
+                        else -> continue
+                    }
+
+                    collection.document(id.toString()).set(item).await()
                 }
 
-                Tasks.await(batch.commit())
-                Utility.log("Upload successful to $collectionName")
+                // Optional: return success if needed
             } catch (e: Exception) {
-                Utility.log("Upload failed: ${e.message}")
+                // You can log it or rethrow it based on your needs
+                Utility.log("Upload Failed: ${e.message}")
             }
+        }
+
+        suspend fun deleteFromDatabase(
+            collectionName:String,
+            itemId:String
+            )= withContext(Dispatchers.IO){
+                try{
+                    val email = FirebaseAuth.getInstance().currentUser?.email
+                    val collection = Firebase.firestore
+                        .collection(COLLECTION)
+                        .document(email.toString())
+                        .collection(collectionName)
+                    collection.document(itemId).delete().await()
+                }
+                catch (e:Exception){
+                    Utility.log("Remove Failed: ${e.message}")
+                }
         }
 
 
@@ -385,21 +436,20 @@ class Helper(private val context: Context) {
 
 
         suspend fun <T : Any> downloadListFromFirestoreSuspend(
-            userId: String,
+            userId: String?,
             collectionName: String,
             clazz: Class<T>
         ): List<T> = withContext(Dispatchers.IO) {
-            val db = FirebaseFirestore.getInstance()
-            try {
-                val snapshot = Tasks.await(
-                    db.collection("users")
-                        .document(userId)
-                        .collection(collectionName)
-                        .get()
-                )
-                snapshot.documents.mapNotNull { it.toObject(clazz) }
-            } catch (e: Exception) {
-                Utility.log("Download failed: ${e.message}")
+            try{
+                val collection = Firebase.firestore
+                    .collection(COLLECTION)
+                    .document(userId.toString())
+                    .collection(collectionName)
+                val docs = collection.get().await()
+                docs.documents.mapNotNull { it.toObject(clazz) }
+            }
+            catch (e:Exception){
+                Utility.log("Download Failed: ${e.message}")
                 emptyList()
             }
         }
@@ -415,32 +465,113 @@ class Helper(private val context: Context) {
 
             val userData = retrieveItemInfo(context)
             val budgetData = loadList<BudgetItem>(context, BUDGET_ITEM_FILE)
+            val sharedData = loadList<SharedItem>(context, SHARED_ITEM_FILE)
 
             if (user != null) {
-                val remoteUserData = downloadListFromFirestoreSuspend(user.uid, ITEM_INFO_COLLECTION, ItemInfo::class.java)
-                val remoteBudgetData = downloadListFromFirestoreSuspend(user.uid, BUDGET_ITEM_COLLECTION, BudgetItem::class.java)
+                val remoteUserData = downloadListFromFirestoreSuspend(user.email, ITEM_INFO_COLLECTION, ItemInfo::class.java)
+                val remoteBudgetData = downloadListFromFirestoreSuspend(user.email, BUDGET_ITEM_COLLECTION, BudgetItem::class.java)
+                val remoteSharedData = downloadSharedList()
 
                 // Update ViewModel with downloaded data
                 viewModel.addList(viewModel.userData,remoteUserData.toMutableList())
                 viewModel.addList(viewModel.budgetData, remoteBudgetData.toMutableList())
+                viewModel.addList(viewModel.sharedData, remoteSharedData.toMutableList())
 
                 // Save downloaded data to local storage
                 saveList(viewModel.userData, context, ITEM_INFO_FILE)
                 saveList(viewModel.budgetData, context, BUDGET_ITEM_FILE)
+                saveList(viewModel.sharedData, context, SHARED_ITEM_FILE)
 
-                Utility.log("UserData and BudgetData Loaded from Firestore and Saved Locally")
+                Utility.log("UserData, BudgetData and SharedData Loaded from Firestore and Saved Locally")
             } else {
                 viewModel.addList(viewModel.userData,userData.toMutableList())
                 viewModel.addList(viewModel.budgetData, budgetData.toMutableList())
+                viewModel.addList(viewModel.sharedData, sharedData.toMutableList())
 
                 Utility.log("Loaded Local userData: $userData")
                 Utility.log("Loaded Local budgetData: $budgetData")
+                Utility.log("Loaded Local sharedData: $sharedData")
             }
         }
 
 
 
 
+
+
+
+
+
+
+
+
+        suspend fun uploadSharedList(
+            itemList: List<SharedItem>,
+        ) = withContext(Dispatchers.IO) {
+            try {
+                val collection = Firebase.firestore
+                    .collection(SHARED)
+
+                for (item in itemList) {
+
+                    if(item.id.isNullOrEmpty()) {
+                        var customId = UUID.randomUUID().toString()
+                        customId = "${item.owner}_$customId"
+                        item.id = customId
+                    }
+
+                    val id = item.id
+                    collection.document(id.toString()).set(item).await()
+                }
+
+                // Optional: return success if needed
+            } catch (e: Exception) {
+                // You can log it or rethrow it based on your needs
+                Utility.log("Upload Failed: ${e.message}")
+            }
+        }
+
+        suspend fun deleteSharedItem(
+            itemId:String
+        )= withContext(Dispatchers.IO){
+            try{
+                val collection = Firebase.firestore
+                    .collection(SHARED)
+                collection.document(itemId).delete().await()
+            }
+            catch (e:Exception){
+                Utility.log("Remove Failed: ${e.message}")
+            }
+        }
+
+
+
+
+
+        suspend fun downloadSharedList(): List<SharedItem> {
+            val user = Firebase.auth.currentUser ?: return emptyList()
+            val email = user.email ?: return emptyList()
+
+            return try {
+                // Single query using OR logic (Firestore doesn't support OR directly)
+                val snapshot = Firebase.firestore.collection("Shared")
+                    .where(
+                        Filter.or(
+                            Filter.equalTo("owner", email),
+                            Filter.arrayContains("emails", email)
+                        )
+                    )
+                    .get()
+                    .await()
+
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(SharedItem::class.java)?.copy(id = doc.id)
+                }
+            } catch (e: Exception) {
+                Log.e("Firestore", "Error fetching shared items", e)
+                emptyList()
+            }
+        }
 
 
 

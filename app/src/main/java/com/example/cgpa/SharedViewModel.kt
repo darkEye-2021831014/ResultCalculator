@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.rpc.Help
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.math.abs
@@ -13,15 +14,55 @@ class SharedViewModel : ViewModel() {
 
     val userData = MutableLiveData<MutableList<ItemInfo>>(mutableListOf())
     val budgetData = MutableLiveData<MutableList<BudgetItem>>(mutableListOf())
+    val sharedData = MutableLiveData<MutableList<SharedItem>>(mutableListOf())
+
     val monthlyData = MutableLiveData<MutableMap<Pair<Int,Int>,MonthlyInfo>>(mutableMapOf())
     val monthlyCategoryData = MutableLiveData<MutableMap<Triple<Int,Int,String>,MonthlyInfo>>(mutableMapOf())
 
     val selectedItem = MutableLiveData<ItemInfo>()
     val selectedChart = MutableLiveData<ChartInfo>()
     val userAccount = MutableLiveData<AccountInfo>()
+    val mode = MutableLiveData<String?>()
+
+
+    fun switchMode(mode:String?,context: Context){
+
+        this.mode.value = mode
+
+        val viewModel = this
+        if(mode==null){
+            viewModelScope.launch {
+                Helper.loadSavedData(context,viewModel);
+            }
+        }
+        else{
+            sharedData.value?.let{data->
+                data.forEach{item->
+                    if(item.name == mode){
+                        addList(userData,item.items)
+                        addList(budgetData,item.budgets)
+                    }
+                }
+            }
+
+        }
+    }
+
+
 
     // Add data to the respective list
     fun setData(data: Any) {
+        if(mode.value!=null){
+            sharedData.value?.let{data->
+                data.forEach{item->
+                    if(item.name == mode.value){
+                        item.items = userData.value?: mutableListOf()
+                        item.budgets = budgetData.value?: mutableListOf()
+                    }
+                }
+            }
+        }
+
         val user = FirebaseAuth.getInstance().currentUser
         when (data) {
             is ItemInfo -> {
@@ -33,7 +74,11 @@ class SharedViewModel : ViewModel() {
 
                 user?.let{
                     viewModelScope.launch {
-                        Helper.uploadListToFirestoreSuspend(user.uid,list,Helper.ITEM_INFO_COLLECTION)
+                        if(mode.value == null)
+                            Helper.uploadListToFirestoreSuspend(user.email,list,Helper.ITEM_INFO_COLLECTION)
+                        else {
+                            Helper.uploadSharedList(sharedData.value?.toList()?: mutableListOf())
+                        }
                     }
                 }
             }
@@ -51,7 +96,21 @@ class SharedViewModel : ViewModel() {
         }
     }
 
+
+
     fun addItem(item:Any, context:Context){
+
+        if(mode.value!=null){
+            sharedData.value?.let{data->
+                data.forEach{item->
+                    if(item.name == mode.value){
+                        item.items = userData.value?: mutableListOf()
+                        item.budgets = budgetData.value?: mutableListOf()
+                    }
+                }
+            }
+        }
+
         val user = FirebaseAuth.getInstance().currentUser
         when(item){
             is BudgetItem ->{
@@ -63,16 +122,47 @@ class SharedViewModel : ViewModel() {
 
                 user?.let{
                     viewModelScope.launch {
-                        Helper.uploadListToFirestoreSuspend(user.uid,list,Helper.BUDGET_ITEM_COLLECTION)
+                        if(mode.value==null)
+                            Helper.uploadListToFirestoreSuspend(user.email,list,Helper.BUDGET_ITEM_COLLECTION)
+                        else
+                            Helper.uploadSharedList(sharedData.value?.toList()?: mutableListOf())
                     }
                 }
             }
+            is SharedItem->{
+                val list =  sharedData.value ?: mutableListOf()
+                list.add(item)
+                sharedData.value = list
+                Helper.saveList(sharedData,context,Helper.SHARED_ITEM_FILE)
+
+                user?.let{
+                    viewModelScope.launch {
+                        Helper.uploadSharedList(list)
+                    }
+                }
+            }
+
         }
     }
 
 
     // Remove data from the respective list
     fun removeData(data: Any) {
+
+        if(mode.value!=null){
+            sharedData.value?.let{data->
+                data.forEach{item->
+                    if(item.name == mode.value){
+                        item.items = userData.value?: mutableListOf()
+                        item.budgets = budgetData.value?: mutableListOf()
+                        viewModelScope.launch {
+                            Helper.uploadSharedList(sharedData.value?.toList() ?: mutableListOf())
+                        }
+                    }
+                }
+            }
+        }
+
         val user = FirebaseAuth.getInstance().currentUser
         when (data) {
             is ItemInfo -> {
@@ -80,7 +170,8 @@ class SharedViewModel : ViewModel() {
 
                 user?.let{
                     viewModelScope.launch {
-                        Helper.uploadListToFirestoreSuspend(user.uid,userData.value?.toList()?: listOf(),Helper.ITEM_INFO_COLLECTION)
+                        if(data.id!=null && mode.value==null)
+                            Helper.deleteFromDatabase(Helper.ITEM_INFO_COLLECTION,data.id.toString())
                     }
                 }
             }
@@ -93,6 +184,20 @@ class SharedViewModel : ViewModel() {
     }
 
     fun removeItem(item:Any,context:Context){
+        if(mode.value!=null){
+            sharedData.value?.let{data->
+                data.forEach{item->
+                    if(item.name == mode.value){
+                        item.items = userData.value?: mutableListOf()
+                        item.budgets = budgetData.value?: mutableListOf()
+                        viewModelScope.launch {
+                            Helper.uploadSharedList(sharedData.value?.toList() ?: mutableListOf())
+                        }
+                    }
+                }
+            }
+        }
+
         val user = FirebaseAuth.getInstance().currentUser
         when(item){
             is BudgetItem->{
@@ -102,11 +207,27 @@ class SharedViewModel : ViewModel() {
 
                     user?.let{
                         viewModelScope.launch {
-                            Helper.uploadListToFirestoreSuspend(user.uid,budgetData.value?.toList()?: listOf(),Helper.BUDGET_ITEM_COLLECTION)
+                            if(item.id !=null && mode.value==null)
+                                Helper.deleteFromDatabase(Helper.BUDGET_ITEM_COLLECTION,item.id.toString())
                         }
                     }
                 }
             }
+            is SharedItem->{
+                if(sharedData.value?.contains(item) == true) {
+                    removeLiveDataItem(sharedData, item)
+                    Helper.saveList(sharedData, context, Helper.SHARED_ITEM_FILE)
+
+                    user?.let{
+                        viewModelScope.launch {
+                            if(item.id !=null)
+                                Helper.deleteSharedItem(item.id.toString())
+                        }
+                    }
+                }
+            }
+
+
         }
     }
 

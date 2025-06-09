@@ -42,20 +42,25 @@ class ProfileManager(private val context: Context,
 
 
     fun signInSuccessful(){
-        val user = FirebaseAuth.getInstance().currentUser
-        user?.let {
-            val accountInfo = viewModel.userAccount.value
-            accountInfo?.apply {
-                name = it.displayName
-                email = it.email
-                photoUrl = it.photoUrl?.toString()
-                uid =it.uid
-                signInButtonText = "Sign Out"
-                buttonColor = Color.RED
-                startIcon = null
-                endIcon = Helper.getIcon(context,R.drawable.ic_right)
+        try {
+            val user = FirebaseAuth.getInstance().currentUser
+            user?.let {
+                val accountInfo = viewModel.userAccount.value
+                accountInfo?.apply {
+                    name = it.displayName
+                    email = it.email
+                    photoUrl = it.photoUrl?.toString()
+                    uid = it.uid
+                    signInButtonText = "Sign Out"
+                    buttonColor = Color.RED
+                    startIcon = null
+                    endIcon = Helper.getIcon(context, R.drawable.ic_right)
+                }
+                viewModel.userAccount.value = accountInfo
             }
-            viewModel.userAccount.value = accountInfo
+        }
+        catch (e:Exception){
+            Utility.log("Sign In Error: ${e.message}")
         }
     }
 

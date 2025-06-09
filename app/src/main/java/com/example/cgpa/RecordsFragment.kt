@@ -136,11 +136,65 @@ class RecordsFragment : Fragment() {
 
         }
 
+        //handle header button mode change
+        view.findViewById<ImageButton>(R.id.mode).setOnClickListener{
+            val options: MutableList<String> = mutableListOf()
+            options.add("Personal")
+            viewModel.sharedData.value?.let {
+                it.forEach { item ->
+                    options.add(item.name ?: "N/A")
+                }
+            }
+            showSingleChoiceDialog(requireContext(), options,"Select Record Type") { selected ->
+                val name = options[selected]
+                if(name == "Personal") {
+                    view.findViewById<TextView>(R.id.recordName).text = "Personal Records"
+                    viewModel.switchMode(null, requireContext())
+                }
+                else {
+                    view.findViewById<TextView>(R.id.recordName).text = name
+                    viewModel.switchMode(name, requireContext())
+                }
+            }
+        }
+
         //list of items
         setupRecyclerView(view)
 
         return view
     }
+
+
+
+
+    fun showSingleChoiceDialog(
+        context: Context,
+        options: MutableList<String>,  // Changed to immutable List
+        title: String = "Choose an option",  // Added customizable title
+        selected: (Int) -> Unit
+    ) {
+        var selectedOption = 0 // default selection
+
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setSingleChoiceItems(options.toTypedArray(), selectedOption) { _, which ->
+                selectedOption = which
+            }
+            .setPositiveButton("OK") { dialog, _ ->
+                selected(selectedOption)  // Call the callback with selected position
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setOnCancelListener {
+                // Handle if user dismisses dialog without pressing any button
+            }
+            .create()
+            .show()
+    }
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupRecyclerView(view: View) {
